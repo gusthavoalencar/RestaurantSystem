@@ -9,8 +9,8 @@ Clone the project
 1. Open Visual Studio Code.
 2. Navigate to the `backend` folder.
 3. Run the following commands:
-   npm install
-   npm run dev
+   `docker build -t backend-image .`
+   `docker run -p 4000:4000 backend-image`
 
 ### Frontend
 
