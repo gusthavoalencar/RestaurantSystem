@@ -19,3 +19,9 @@ Clone the project
 3. Run the following commands:
    `docker build -t <image-name-for-frontend> .`
    `docker run -p 3000:3000 <image-name-for-frontend>`
+
+### Database
+
+1. Run the following commands:
+   `docker pull mongodb/mongodb-community-server`
+   `docker run --name <image-name-for-database> -d -p 27017:27017 mongodb/mongodb-community-server`
