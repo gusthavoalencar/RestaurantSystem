@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: frontend
+    command: npm start -- --legacy-watch --watchAll
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
