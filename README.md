@@ -10,7 +10,7 @@ Clone the project
 2. Navigate to the `backend` folder.
 3. Run the following commands:
    `docker build -t <image-name-for-backend> .`
-   `docker run -p 4000:4000 <image-name-for-backend>`
+   `docker-compose up --build`
 
 ### Frontend
 
@@ -18,7 +18,7 @@ Clone the project
 2. Navigate to the `frontend` folder.
 3. Run the following commands:
    `docker build -t <image-name-for-frontend> .`
-   `docker run -p 3000:3000 <image-name-for-frontend>`
+   `docker-compose up --build`
 
 ### Database
 

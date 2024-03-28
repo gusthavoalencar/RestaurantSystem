@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: backend-api
+    command: npm run dev -- --legacy-watch
+    ports:
+      - 4000:4000
+    volumes:
+      - .:/app
