@@ -22,6 +22,9 @@ Clone the project
 
 ### Database
 
-1. Run the following commands:
-   `docker pull mongodb/mongodb-community-server`
-   `docker run --name <image-name-for-database> -d -p 27017:27017 mongodb/mongodb-community-server`
+1. Create an account on mongodb (`https://cloud.mongodb.com/`).
+2. Create a cloud database.
+3. Retrieve the connection string from your database.
+   It should look something like: `mongodb+srv://<username>:<password>@<dbname>.mongodb.net/`.
+4. Add the connection string to the .env file in the `backend`.
+   Example: `MONGO_URI=mongodb+srv://<username>:<password>@<dbname>.mongodb.net/?retryWrites=true&w=majority`.

@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import ItemsRouter from './routes/Items';
+import mongoose from 'mongoose';
 
 dotenv.config();
 const app = express();
@@ -26,8 +27,15 @@ app.use(cors(options));
 
 app.use('/api/items', ItemsRouter);
 
-app.listen(Number(process.env.PORT), () => {
-  console.log(`Server is running on http://localhost:${process.env.PORT}`);
-});
+mongoose
+  .connect(process.env.MONGO_URI as string)
+  .then(() => {
+    app.listen(Number(process.env.PORT), () => {
+      console.log('Connected to db & listening on port', process.env.PORT);
+    });
+  })
+  .catch((error: Error) => {
+    console.log(error);
+  });
 
 export default app;

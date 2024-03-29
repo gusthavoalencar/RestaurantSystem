@@ -10,6 +10,10 @@ const itemControllers = {
     }
   },
 
+  createItem: async (req: Request, res: Response) => {},
+
+  deleteItem: async (req: Request, res: Response) => {},
+
   getHelloWorld: (req: Request, res: Response) => {
     let items = { test: 'hello world' };
     console.log('hello woeld');
