@@ -3,8 +3,6 @@ import itemControllers from '../controllers/itemControllers/itemControllers';
 
 const router = express.Router();
 
-router.get('/getHelloWorld', itemControllers.getHelloWorld);
-
 router.get('/getItems', itemControllers.getItems);
 
 router.post('/createItem', itemControllers.getItems);
