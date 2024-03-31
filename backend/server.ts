@@ -9,23 +9,18 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    next();
-  }
-);
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  next();
+});
 
-const allowedOrigins = [
-  `http://localhost:${process.env.PORT}`,
-  `http://localhost:${process.env.FRONTEND_PORT}`,
-];
+const allowedOrigins = [`http://localhost:${process.env.PORT}`, `http://localhost:${process.env.FRONTEND_PORT}`];
 
 const options: cors.CorsOptions = {
-  origin: allowedOrigins,
+  origin: allowedOrigins
 };
 app.use(cors(options));
 
-app.use('/api/items', ItemsRouter);
+app.use("/api/items", ItemsRouter);
 
 mongoose
   .connect(process.env.MONGO_URI as string)

@@ -7,8 +7,8 @@ const itemControllers = {
     try {
       const items = await Item.find();
       return res.status(200).json(items);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error) {
+      return res.status(400).json({ error: (error as Error).message });
     }
   },
 
@@ -56,7 +56,7 @@ const itemControllers = {
     } catch (error: any) {
       return res.status(400).json({ error: error.message });
     }
-  },
+  }
 };
 
 export default itemControllers;
