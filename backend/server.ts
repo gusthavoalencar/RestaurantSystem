@@ -1,9 +1,9 @@
-import * as dotenv from 'dotenv';
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import ItemsRouter from './routes/Items';
-import mongoose from 'mongoose';
+import * as dotenv from "dotenv";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import ItemsRouter from "./routes/Items";
+import mongoose from "mongoose";
 
 dotenv.config();
 const app = express();
@@ -26,7 +26,7 @@ mongoose
   .connect(process.env.MONGO_URI as string)
   .then(() => {
     app.listen(Number(process.env.PORT), () => {
-      console.log('Connected to db & listening on port', process.env.PORT);
+      console.log("Connected to db & listening on port", process.env.PORT);
     });
   })
   .catch((error: Error) => {

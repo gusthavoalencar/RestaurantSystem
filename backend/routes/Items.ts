@@ -3,10 +3,10 @@ import itemControllers from "../controllers/itemControllers/itemControllers";
 
 const router = express.Router();
 
-router.get('/getItems', itemControllers.getItems);
+router.get("/getItems", itemControllers.getItems);
 
-router.post('/createItem', itemControllers.getItems);
+router.post("/createItem", itemControllers.createItem);
 
-router.delete('/deleteItem/:id', itemControllers.getItems);
+router.delete("/deleteItem", itemControllers.deleteItem);
 
 export default router;
