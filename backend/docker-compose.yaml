@@ -2,8 +2,9 @@ services:
   app:
     build: .
     container_name: backend-api
-    command: npm run dev -- --legacy-watch
+    command: npm run devTwo
     ports:
       - 4000:4000
+      - 9229:9229
     volumes:
       - .:/app
