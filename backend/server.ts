@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import ItemRouter from "./routes/item";
-import ItemTypeRouter from "./routes/itemType";
+import ItemCategoryRouter from "./routes/itemCategory";
 import mongoose from "mongoose";
 
 //Load variables from environment
@@ -26,7 +26,7 @@ app.use(cors(options));
 
 //Routers
 app.use("/api/item", ItemRouter);
-app.use("/api/itemtypes", ItemTypeRouter);
+app.use("/api/itemCategory", ItemCategoryRouter);
 
 //Establish connection to the DB & listen for requests
 mongoose
