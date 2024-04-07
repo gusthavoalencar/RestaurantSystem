@@ -14,6 +14,11 @@ const itemCategoryControllers = {
   },
 
   //Create ItemCategory
+  // Example of a request object to create:
+  // {
+  //     "name": "Favorites",
+  //      "active": true,
+  // }
   createItemCategory: async (req: Request, res: Response) => {
     try {
       const itemCategory = req.body;

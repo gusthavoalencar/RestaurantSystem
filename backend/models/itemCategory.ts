@@ -11,9 +11,7 @@ export interface IItemCategory extends mongoose.Document {
 const itemCategorySchema = new Schema(
   {
     name: { type: String, required: [true, "Item category name cannot be empty"] },
-    active: { type: Boolean, required: [true, "Active cannot be null "] },
-    //future implementation
-    createdBy: { type: String, required: [false, ""] }
+    active: { type: Boolean, required: [true, "Active cannot be null "] }
   },
   { timestamps: true }
 );

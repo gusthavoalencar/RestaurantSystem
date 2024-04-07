@@ -4,23 +4,27 @@ const Schema = mongoose.Schema;
 
 export interface IItem extends mongoose.Document {
   name: string;
-  type: ["starter", "main", "dessert", "drink"];
+  amount: number;
+  isMenuItem: boolean;
+  itemCategories: string[];
   price: number;
-  stockAmount: number;
+  active: boolean;
 }
 
 const itemSchema = new Schema(
   {
     name: { type: String, required: [true, "Name cannot be empty"] },
-    type: { type: String, required: [true, "Item type is required"] },
+    amount: {
+      type: Number,
+      required: false
+    },
+    isMenuItem: { type: Boolean, required: [true, "isMenuItem boolean value is required"] },
+    itemCategories: { type: [String], required: false },
     price: {
       type: Number,
-      required: [true, "Price must be a positive number"]
+      required: false
     },
-    stockAmount: {
-      type: Number,
-      required: [true, "Stock amount must be a non-negative number"]
-    }
+    active: { type: Boolean, required: [true, "Active status boolean value is required"] }
   },
   { timestamps: true }
 );
