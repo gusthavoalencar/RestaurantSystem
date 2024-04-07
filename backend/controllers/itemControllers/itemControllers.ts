@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Item from "../../models/item";
+import ItemCategory from "../../models/itemCategory";
 
 const itemControllers = {
   //Gets all items
@@ -15,10 +16,12 @@ const itemControllers = {
   // Creates an item for the inventory
   // Example of a request object to create:
   // {
-  //     "name": "Salad",
+  //     "name": "Fruit Salad",
+  //     "amount": 5,
+  //     "isMenuItem": true,
+  //     "itemCategories": ["favorites", "salads"],
   //      "price": 9.99,
-  //      "stockAmount": 10,
-  //      "type": "starter"
+  //      "active": true
   // }
   createItem: async (req: Request, res: Response) => {
     try {
@@ -28,6 +31,15 @@ const itemControllers = {
 
       if (existingItem) {
         return res.status(400).json({ error: "Item already exists" });
+      }
+
+      const existingCategories = await ItemCategory.find({ name: { $in: item.itemCategories } });
+
+      if (existingCategories.length !== item.itemCategories.length) {
+        const missingCategories = item.itemCategories.filter(
+          (categoryName: string) => !existingCategories.some((dbCategory) => dbCategory.name == categoryName)
+        );
+        return res.status(400).json({ error: `Item Category not found: ${missingCategories.join(", ")}` });
       }
 
       const savedItem = await new Item(item).save();
