@@ -1,0 +1,28 @@
+.NavBtn {
+  height: 52px;
+}
+.NavBtn:hover {
+  background-color: rgba(92, 98, 112, 0.56);
+  -webkit-box-shadow: 0px 4px 4px 4px rgba(0, 0, 0, 0.26);
+  box-shadow: 0px 4px 4px 4px rgba(0, 0, 0, 0.26);
+}
+.navBtnSelected {
+  background-color: rgba(61, 66, 79, 0.56);
+  -webkit-box-shadow: 0px 4px 4px 4px rgba(0, 0, 0, 0.26);
+  box-shadow: 0px 4px 4px 4px rgba(0, 0, 0, 0.26);
+}
+.NavText {
+  color: #e0e1e3;
+  font-weight: 300;
+}
+
+.navBtnIcon {
+  margin-right: 7px;
+  height: 30px;
+  width: 30px;
+  color: #e0e1e3;
+}
+
+.greenIcon {
+  color: #59a656;
+}
