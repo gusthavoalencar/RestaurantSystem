@@ -9,8 +9,8 @@ const ItemsTableHeaders = ({ tableHeaders }: TableHeadersProps) => {
         <div className="row tableHeader rounded p-0 m-0 me-5 ms-2 mt-2 pt-2 pb-2">
             <div className="col-7">
                 <div className="row">
-                    {tableHeaders.map((header) => (
-                        <div className="col text-center">
+                    {tableHeaders.map((header, index) => (
+                        <div key={index} className="col text-center">
                             {header}
                         </div>
                     ))}
