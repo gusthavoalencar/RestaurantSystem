@@ -40,7 +40,6 @@ const Inventory = () => {
         const fetchItems = async () => {
             const items = await getItems();
             setItems(items);
-            console.log(items);
         };
 
         fetchItems();

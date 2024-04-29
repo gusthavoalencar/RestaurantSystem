@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./index.css";
-import NavButton from "../NavButton";
-import CompanyLogo from "../CompanyLogo";
+import NavButton from "./NavButton";
+import CompanyLogo from "./CompanyLogo";
 import { Link, useLocation } from "react-router-dom";
 
 const SideNav = () => {

@@ -1,5 +1,5 @@
-import ItemsRows from "../ItemsRows";
-import ItemsTableHeaders from "../ItemsTableHeaders";
+import ItemsRows from "./ItemsRows";
+import ItemsTableHeaders from "./ItemsTableHeaders";
 import "./index.css";
 
 interface IItem {
