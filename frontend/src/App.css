@@ -4,3 +4,10 @@
 .pointer {
   cursor: pointer;
 }
+
+.mainGreenTextColor {
+  color: #59a656;
+}
+.mainGreenBgColor {
+  background-color: #59a656;
+}

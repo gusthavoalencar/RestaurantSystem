@@ -1,0 +1,17 @@
+.shadow {
+  box-shadow: 1px 6px 19px 1px rgba(0, 0, 0, 0.62);
+  -webkit-box-shadow: 1px 6px 19px 1px rgba(0, 0, 0, 0.62);
+  -moz-box-shadow: 1px 6px 19px 1px rgba(0, 0, 0, 0.62);
+}
+
+.tableRow {
+  min-height: 50px;
+}
+
+.tableRow:hover {
+  background-color: #f5f5f5;
+}
+
+.tableScrollbar {
+  height: 70vh;
+}
