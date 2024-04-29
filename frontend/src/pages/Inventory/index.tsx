@@ -14,6 +14,7 @@ interface IItem {
 }
 
 const Inventory = () => {
+    const headers = ['ID No.', 'Name', 'Type', 'Stock Amount'];
 
     const fetchData = async (url: string) => {
         const response = await fetch(url);
@@ -55,12 +56,7 @@ const Inventory = () => {
                     <CreateOrderBtn text="Create Buy Order" />
                 </div>
             </div>
-            <div>
-                {items.map((item) => (
-                    <div key={item._id}>{item.name}</div>
-                ))}
-            </div>
-            <ItemsTable />
+            <ItemsTable headers={headers} items={items} />
         </>
     );
 };
