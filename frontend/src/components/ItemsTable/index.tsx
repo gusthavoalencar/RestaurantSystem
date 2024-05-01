@@ -32,15 +32,13 @@ const ItemsTable = ({ headers, items }: ItemsTableProps) => {
 
     const filterItems = () => {
         const tempMenuItems = items.filter((item) => {
-            item.isMenuItem == true
+            return item.isMenuItem === true
         });
-        console.log("tempMenuItems: " + tempMenuItems)
         setMenuItems(tempMenuItems);
 
         const tempStockItems = items.filter((item) => {
-            item.isMenuItem == false
+            return item.isMenuItem === false
         });
-        console.log("tempStockItems: " + tempMenuItems)
 
         setStockItems(tempStockItems);
     };
@@ -52,13 +50,13 @@ const ItemsTable = ({ headers, items }: ItemsTableProps) => {
     return (
         <>
             <div className="row p-0 m-0">
-                <div className="col-1 d-flex ps-2" onClick={() => handleTableTypeSelected("Menu")}>
-                    <div className="pointer me-2">
+                <div onClick={() => handleTableTypeSelected("Menu")} className="col-1 d-flex ps-2">
+                    <div className={tabSelected == "Menu" ? "pointer border-bottom border-2 border-dark me-2" : "pointer me-2"}>
                         <TableTabs title="Menu" />
                     </div>
                 </div>
                 <div className="col-1 d-flex ps-2" onClick={() => handleTableTypeSelected("Stock")}>
-                    <div className="pointer me-2">
+                    <div className={tabSelected == "Stock" ? "pointer border-bottom border-2 border-dark me-2" : "pointer me-2"}>
                         <TableTabs title="Stock" />
                     </div>
                 </div>
