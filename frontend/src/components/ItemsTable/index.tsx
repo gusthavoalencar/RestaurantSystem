@@ -45,18 +45,18 @@ const ItemsTable = ({ headers, items }: ItemsTableProps) => {
 
     useEffect(() => {
         filterItems();
-    }, []);
+    }, [items]);
 
     return (
         <>
             <div className="row p-0 m-0">
                 <div onClick={() => handleTableTypeSelected("Menu")} className="col-1 d-flex ps-2">
-                    <div className={tabSelected == "Menu" ? "pointer border-bottom border-2 border-dark me-2" : "pointer me-2"}>
+                    <div className={tabSelected == "Menu" ? "pointer greenTableTabBorder border-2 me-2" : "pointer me-2"}>
                         <TableTabs title="Menu" />
                     </div>
                 </div>
                 <div className="col-1 d-flex ps-2" onClick={() => handleTableTypeSelected("Stock")}>
-                    <div className={tabSelected == "Stock" ? "pointer border-bottom border-2 border-dark me-2" : "pointer me-2"}>
+                    <div className={tabSelected == "Stock" ? "pointer greenTableTabBorder border-2 me-2" : "pointer me-2"}>
                         <TableTabs title="Stock" />
                     </div>
                 </div>

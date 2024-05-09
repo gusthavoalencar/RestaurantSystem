@@ -1,7 +1,7 @@
 import PageTitle from "../../components/PageTitle";
 import ItemsTable from "../../components/ItemsTable";
-import CreateOrderBtn from "../../components/CreateOrderBtn";
 import { useEffect, useState } from "react";
+import CreateModal from "../../components/CreateModal";
 
 interface IItem {
     _id: string;
@@ -52,7 +52,7 @@ const Inventory = () => {
                     <PageTitle text="Inventory" />
                 </div>
                 <div className="col-6 p-0 m-0">
-                    <CreateOrderBtn text="Create Buy Order" />
+                    <CreateModal text="Create" />
                 </div>
             </div>
             <ItemsTable headers={headers} items={items} />

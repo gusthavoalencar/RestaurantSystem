@@ -2,12 +2,16 @@
   font-family: "Nunito", sans-serif;
 }
 .pointer {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 .mainGreenTextColor {
-  color: #59a656;
+  color: #59a656 !important;
 }
 .mainGreenBgColor {
-  background-color: #59a656;
+  background-color: #59a656 !important;
+}
+
+.greenTableTabBorder {
+  border-bottom: 1px solid #59a656 !important;
 }
