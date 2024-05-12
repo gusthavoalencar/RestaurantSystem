@@ -23,7 +23,9 @@ const ItemsRows = ({ items }: ItemsRowsProps) => {
                     <div key={itemIndex} className="row rounded p-0 m-0 me-5 ms-2 mt-1 pt-1 pb-1 align-items-center tableRow align-middle">
                         <div className="col-7">
                             <div className="row">
-                                <div className="col text-center">{item._id}</div>
+                                <div className="col text-center">
+                                    {item._id}
+                                </div>
                                 <div className="col text-center">
                                     {item.name}
                                 </div>
@@ -34,9 +36,6 @@ const ItemsRows = ({ items }: ItemsRowsProps) => {
                                 </div>
                                 <div className="col text-center">
                                     {item.amount}
-                                </div>
-                                <div className="col text-center">
-                                    {item.active}
                                 </div>
                             </div>
                         </div>
