@@ -2,6 +2,7 @@ import "./index.css";
 import { FaCartPlus } from "react-icons/fa";
 import { BiSolidFoodMenu } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import { MdDeliveryDining, MdDinnerDining } from "react-icons/md";
 
 interface ModalOptionProps {
     text: string;
@@ -12,7 +13,7 @@ const ModalOption = ({ text, onClick }: ModalOptionProps) => {
     const navigate = useNavigate();
     let icon = null;
 
-    const changeRoute = () => {
+    const handleClick = () => {
         switch (text) {
             case "Buy Order":
                 navigate("/buy-order");
@@ -32,21 +33,25 @@ const ModalOption = ({ text, onClick }: ModalOptionProps) => {
         case "Stock Item":
             icon = <BiSolidFoodMenu className="buttonImage" />;
             break;
+        case "Delivery":
+            icon = <MdDeliveryDining className="buttonImage" />;
+            break;
+        case "Dine In":
+            icon = <MdDinnerDining className="buttonImage" />;
+            break;
         default:
             icon = <div>No icon found</div>;
     }
 
     return (
-        <>
-            <div className='buttonBody pointer' onClick={changeRoute}>
-                <div className='pt-4 fs-5 text-center'>
-                    {text}
-                </div>
-                <div className='text-center'>
-                    {icon}
-                </div>
+        <div className='buttonBody pointer' onClick={handleClick}>
+            <div className='pt-4 fs-5 text-center'>
+                {text}
             </div>
-        </>
+            <div className='text-center'>
+                {icon}
+            </div>
+        </div>
     );
 };
 

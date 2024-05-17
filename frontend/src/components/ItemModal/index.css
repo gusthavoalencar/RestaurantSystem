@@ -1,0 +1,10 @@
+.custom-modal-content {
+  width: 600px;
+}
+
+.custom-modal-dialog {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 600px;
+  margin-top: 60px;
+}

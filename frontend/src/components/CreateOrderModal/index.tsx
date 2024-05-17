@@ -4,18 +4,17 @@ import ModalOption from '../ModalOption';
 import "./index.css";
 
 
-interface CreateModalProps {
+interface CreateOrderModalProps {
     show: boolean;
     onHide: () => void;
-    onOpenItemModal: () => void;
 }
 
-const CreateModal = ({ show, onHide, onOpenItemModal }: CreateModalProps) => {
+const CreateOrderModal = ({ show, onHide }: CreateOrderModalProps) => {
     return (
         <>
             <Modal show={show} onHide={onHide} dialogClassName="custom-modal-dialog" contentClassName="custom-modal-content">
                 <Modal.Header className="border-0 d-flex justify-content-center align-items-center">
-                    <Modal.Title className='m-0'>Create Buy Order/Item</Modal.Title>
+                    <Modal.Title className='m-0'>Create Order</Modal.Title>
                     <Button variant="button" onClick={onHide} className="position-absolute end-0 fs-2 text-secondary">
                         <span aria-hidden="true">&times;</span>
                     </Button>
@@ -23,12 +22,11 @@ const CreateModal = ({ show, onHide, onOpenItemModal }: CreateModalProps) => {
                 <Modal.Body className='pb-5'>
                     <div className='row'>
                         <div className='col d-flex justify-content-center'>
-                            <ModalOption text='Buy Order' onClick={() => onHide()} />
+                            <ModalOption text='Dine In' onClick={() => onHide()} />
                         </div>
                         <div className='col d-flex justify-content-center'>
-                            <ModalOption text='Stock Item' onClick={() => {
+                            <ModalOption text='Delivery' onClick={() => {
                                 onHide();
-                                onOpenItemModal();
                             }} />
                         </div>
                     </div>
@@ -38,4 +36,4 @@ const CreateModal = ({ show, onHide, onOpenItemModal }: CreateModalProps) => {
     );
 };
 
-export default CreateModal;
+export default CreateOrderModal;
