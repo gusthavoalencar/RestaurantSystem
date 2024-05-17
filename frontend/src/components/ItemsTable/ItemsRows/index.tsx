@@ -30,9 +30,7 @@ const ItemsRows = ({ items }: ItemsRowsProps) => {
                                     {item.name}
                                 </div>
                                 <div className="col text-center">
-                                    {item.itemCategories.map((category, categoryIndex) => (
-                                        <span key={categoryIndex}>{category}</span>
-                                    ))}
+                                    <span>{item.itemCategories.join(', ')}</span>
                                 </div>
                                 <div className="col text-center">
                                     {item.amount}

@@ -1,8 +1,8 @@
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import "./index.css";
-import { useEffect, useState } from 'react';
-import Select from 'react-select';
+import { ChangeEvent, useEffect, useState } from 'react';
+import Select, { MultiValue } from 'react-select';
 
 interface CreateItemModalProps {
     show: boolean;
@@ -14,26 +14,30 @@ interface IItemCategories {
     active: boolean;
 }
 
+interface IItem {
+    name: string;
+    amount: number;
+    isMenuItem: boolean;
+    itemCategories: string[];
+    price: number;
+    active: boolean;
+}
+
 const CreateItemModal = ({ show, onHide }: CreateItemModalProps) => {
 
-    const [isItemActive, setIsItemActive] = useState(true);
-    const [categories, setcategories] = useState<IItemCategories[]>([]);
-
-    const handleActiveChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setIsItemActive(e.target.checked);
-    };
-
-    const fetchData = async (url: string) => {
-        const response = await fetch(url);
-        const json = await response.json();
-
-        return json;
-    };
+    const [categories, setCategories] = useState<IItemCategories[]>([]);
+    const [item, setItem] = useState<IItem>({
+        name: '',
+        amount: 0,
+        isMenuItem: false,
+        itemCategories: [],
+        price: 0,
+        active: true,
+    });
 
     const getCategories = async (): Promise<IItemCategories[]> => {
         try {
             const categories = await fetchData('http://localhost:4000/api/itemCategory/getItemCategories');
-
             return categories;
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -41,14 +45,79 @@ const CreateItemModal = ({ show, onHide }: CreateItemModalProps) => {
         }
     };
 
+    const fetchData = async (url: string) => {
+        const response = await fetch(url);
+        const json = await response.json();
+        return json;
+    };
+
+    const createItem = async (): Promise<IItem> => {
+        try {
+            const createdItem = await postData('http://localhost:4000/api/item/createItem', item);
+            return createdItem;
+        } catch (error) {
+            console.error("Error creating item:", error);
+            return {
+                name: '',
+                amount: 0,
+                isMenuItem: false,
+                itemCategories: [],
+                price: 0,
+                active: false,
+            };
+        }
+    };
+
+    const postData = async (url: string, data: IItem) => {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        const json = await response.json();
+        return json;
+    };
+
     useEffect(() => {
         const fetchItems = async () => {
             const categories = await getCategories();
-            setcategories(categories);
+            setCategories(categories);
         };
 
         fetchItems();
     }, []);
+
+    function handleSelectChange(newValue: MultiValue<{ value: string; label: string; }>): void {
+        setItem(prevItem => ({
+            ...prevItem,
+            itemCategories: newValue.map(option => option.value),
+        }));
+    }
+
+    const updateItemField = (field: keyof IItem, value: any) => {
+        setItem((prevItem) => ({
+            ...prevItem,
+            [field]: value,
+        }));
+    };
+
+    function handleInputChange(event: ChangeEvent<HTMLInputElement>): void {
+        const { id, value, type, checked } = event.target;
+
+        switch (type) {
+            case 'checkbox':
+                updateItemField(id as keyof IItem, checked);
+                break;
+            case 'number':
+                updateItemField(id as keyof IItem, parseFloat(value));
+                break;
+            default:
+                updateItemField(id as keyof IItem, value);
+                break;
+        }
+    }
 
     return (
         <>
@@ -62,14 +131,14 @@ const CreateItemModal = ({ show, onHide }: CreateItemModalProps) => {
                 <Modal.Body className='pb-3'>
                     <div className="row ms-2">
                         <div className="col-7">
-                            <label className="mb-1" htmlFor="ItemName">Item Name:</label>
+                            <label className="mb-1" htmlFor="name">Item Name:</label>
                             <div className="input-group mb-3">
-                                <input type="text" className="form-control" placeholder="Item Name" aria-label="ItemName" id="ItemName"></input>
+                                <input type="text" className="form-control" placeholder="Item Name" aria-label="name" id="name" value={item.name} onChange={handleInputChange}></input>
                             </div>
 
-                            <label className="mb-1" htmlFor="ItemAmount">Amount:</label>
+                            <label className="mb-1" htmlFor="amount">Amount:</label>
                             <div className="input-group mb-3">
-                                <input type="number" className="form-control" placeholder="Amount" aria-label="ItemAmount" id="ItemAmount"></input>
+                                <input type="number" className="form-control" placeholder="Amount" aria-label="amount" id="amount" value={item.amount} onChange={handleInputChange}></input>
                             </div>
 
                             <label className="mb-1" htmlFor="Categories:">Categories:</label>
@@ -79,28 +148,29 @@ const CreateItemModal = ({ show, onHide }: CreateItemModalProps) => {
                                 options={categories.map(category => ({ value: category.name, label: category.name }))}
                                 className="basic-multi-select mb-3"
                                 classNamePrefix="select"
+                                onChange={handleSelectChange}
                             />
 
-                            <label className="mb-1" htmlFor="ItemPrice">Price:</label>
+                            <label className="mb-1" htmlFor="price">Price:</label>
                             <div className="input-group mb-3">
-                                <input type="number" className="form-control" placeholder="Price" aria-label="ItemPrice" id="ItemPrice"></input>
+                                <input type="number" className="form-control" placeholder="Price" aria-label="price" id="price" value={item.price} onChange={handleInputChange}></input>
                             </div>
 
                             <div className="form-check mb-3">
-                                <input className="form-check-input" type="checkbox" value="" id="isMenuItem"></input>
+                                <input className="form-check-input" type="checkbox" checked={item.isMenuItem} id="isMenuItem" onChange={handleInputChange}></input>
                                 <label className="form-check-label" htmlFor="isMenuItem">
                                     Menu Item
                                 </label>
                             </div>
 
                             <div className="form-check form-switch">
-                                <input className="form-check-input" type="checkbox" id="itemActive" onChange={handleActiveChange} checked={isItemActive}></input>
-                                <label className="form-check-label" htmlFor="itemActive">Active</label>
+                                <input className="form-check-input" type="checkbox" id="active" onChange={handleInputChange} checked={item.active}></input>
+                                <label className="form-check-label" htmlFor="active">Active</label>
                             </div>
                         </div>
                     </div>
                     <div className='row mt-5'>
-                        <Button className='col-5 mx-auto mainGreenBgColor border-0'>Create</Button>
+                        <Button className='col-5 mx-auto mainGreenBgColor border-0' onClick={createItem}>Create</Button>
                     </div>
                 </Modal.Body>
             </Modal>
