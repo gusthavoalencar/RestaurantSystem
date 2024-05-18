@@ -21,6 +21,12 @@ const ModalOption = ({ text, onClick }: ModalOptionProps) => {
             case "Stock Item":
                 onClick();
                 break;
+            case "Delivery":
+                navigate("/orders/createorder");
+                break;
+            case "Dine In":
+                navigate("/orders/createorder");
+                break;
             default:
                 console.error("Error: Routh path not found")
         }
