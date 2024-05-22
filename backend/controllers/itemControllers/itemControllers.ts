@@ -57,7 +57,7 @@ const itemControllers = {
       const itemId = req.query.id;
       const deletedItem = await Item.findByIdAndDelete(itemId);
       if (!deletedItem) {
-        return res.status(404).json({ error: "Item not found" });
+        return res.status(400).json({ error: "Item not found" });
       }
 
       return res.status(200).json(deletedItem);

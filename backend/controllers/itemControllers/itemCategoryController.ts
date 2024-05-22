@@ -44,7 +44,7 @@ const itemCategoryControllers = {
       const itemCategoryId = req.query.id;
       const itemCategory = await ItemCategory.findByIdAndDelete(itemCategoryId);
       if (!itemCategory) {
-        return res.status(404).json({ error: "Item Category not found" });
+        return res.status(400).json({ error: "Item Category not found" });
       }
 
       return res.status(200).json(itemCategory);
