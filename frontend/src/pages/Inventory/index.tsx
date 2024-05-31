@@ -1,10 +1,11 @@
 import PageTitle from "../../components/PageTitle";
 import ItemsTable from "../../components/ItemsTable";
 import { useEffect, useState } from "react";
-import CreateModal from "../../components/CreateModal";
 import { Button } from "react-bootstrap";
-import CreateItemModal from "../../components/CreateItemModal";
 import { TfiPlus } from "react-icons/tfi";
+import { API_BASE_URL } from "../../config/config";
+import CreateItemModal from "../../components/CreateItemModal";
+import ItemModal from "../../components/ItemModal";
 
 interface IItem {
     _id: string;
@@ -38,7 +39,7 @@ const Inventory = () => {
 
     const getItems = async (): Promise<IItem[]> => {
         try {
-            const items = await fetchData('http://localhost:4000/api/item/getitems');
+            const items = await fetchData(API_BASE_URL + 'item/getitems');
 
             return items;
         } catch (error) {
@@ -74,12 +75,12 @@ const Inventory = () => {
             <ItemsTable
                 headers={headers}
                 items={items} />
-            <CreateModal
+            <CreateItemModal
                 show={showCreateModal}
                 onHide={handleCreateModalClose}
                 onOpenItemModal={handleCreateItemModalShow}
             />
-            <CreateItemModal
+            <ItemModal
                 show={showCreateItemModal}
                 onHide={handleCreateItemModalClose}
             />

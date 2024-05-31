@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import ItemRouter from "./routes/item";
 import ItemCategoryRouter from "./routes/itemCategory";
+import SellOrderRouter from "./routes/SellOrder";
 import mongoose from "mongoose";
 
 //Load variables from environment
@@ -27,6 +28,7 @@ app.use(cors(options));
 //Routers
 app.use("/api/item", ItemRouter);
 app.use("/api/itemCategory", ItemCategoryRouter);
+app.use("/api/sellorder", SellOrderRouter);
 
 //Establish connection to the DB & listen for requests
 mongoose

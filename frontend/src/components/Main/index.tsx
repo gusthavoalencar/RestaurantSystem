@@ -3,6 +3,7 @@ import Orders from "../../pages/Orders";
 import Inventory from "../../pages/Inventory";
 import Analytics from "../../pages/Analytics";
 import Management from "../../pages/Management";
+import CreateOrder from "../../pages/Orders/CreateOrder/CreateOrder";
 
 const Main = () => {
     return (
@@ -14,6 +15,7 @@ const Main = () => {
                     <Route path="/inventory" element={<Inventory />} />
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/management" element={<Management />} />
+                    <Route path="/orders/createorder" element={<CreateOrder />} />
                 </Routes>
             </div>
         </>
