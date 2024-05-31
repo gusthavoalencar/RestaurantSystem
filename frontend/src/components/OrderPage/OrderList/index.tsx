@@ -1,15 +1,24 @@
 import { Button } from "react-bootstrap";
-import PageTitle from "../../../components/PageTitle";
-import { useNavigate } from "react-router-dom";
-import { IoChevronBack } from "react-icons/io5";
-import OrderItemList from "../../../components/OrderItemList";
+import { TfiPlus } from "react-icons/tfi";
+import PageTitle from "../../PageTitle";
+import OrderItemList from "./OrderItemList";
 
-const CreateOrder = () => {
-    const navigate = useNavigate();
+interface IItem {
+    _id: string;
+    name: string;
+    amount?: number;
+    isMenuItem: boolean;
+    itemCategories: string[];
+    price?: number;
+    active: boolean;
+}
 
-    const handleBackButtonClick = () => {
-        navigate('/orders');
-    };
+interface OrderListProps {
+    onAddItemClick: React.MouseEventHandler<HTMLButtonElement>;
+    orderItems: IItem[];
+}
+
+const OrderList = ({ onAddItemClick, orderItems }: OrderListProps) => {
 
     return (
         <>
@@ -21,11 +30,11 @@ const CreateOrder = () => {
                     <Button
                         variant="link"
                         className="mainGreenBgColor float-end pt-2 pb-2 ps-3 pe-3 text-white rounded-4 me-5 fw-light text-center pointer text-decoration-none"
-                        onClick={handleBackButtonClick}
+                        onClick={onAddItemClick}
                     >
                         <p className="fs-5 m-0">
-                            <IoChevronBack className="fs-4 me-2" />
-                            Back
+                            <TfiPlus className="fs-4 me-2" />
+                            Add
                         </p>
                     </Button>
                 </div>
@@ -33,16 +42,16 @@ const CreateOrder = () => {
 
             <div className="row p-0 m-0 me-4">
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Starters" />
+                    <OrderItemList title="Starters" orderItems={orderItems} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Mains" />
+                    <OrderItemList title="Mains" orderItems={orderItems} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Desserts" />
+                    <OrderItemList title="Desserts" orderItems={orderItems} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Drinks" />
+                    <OrderItemList title="Drinks" orderItems={orderItems} />
                 </div>
 
             </div>
@@ -50,4 +59,4 @@ const CreateOrder = () => {
     );
 };
 
-export default CreateOrder;
+export default OrderList;
