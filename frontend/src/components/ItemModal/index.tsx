@@ -10,7 +10,7 @@ interface CreateItemModalProps {
     onHide: () => void;
 }
 
-interface IItemCategories {
+interface IItemMenuSection {
     name: string;
     active: boolean;
 }
@@ -19,26 +19,26 @@ interface IItem {
     name: string;
     amount: number;
     isMenuItem: boolean;
-    itemCategories: string[];
+    menuSections: string[];
     price: number;
     active: boolean;
 }
 
 const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
 
-    const [categories, setCategories] = useState<IItemCategories[]>([]);
+    const [categories, setCategories] = useState<IItemMenuSection[]>([]);
     const [item, setItem] = useState<IItem>({
         name: '',
         amount: 0,
         isMenuItem: false,
-        itemCategories: [],
+        menuSections: [],
         price: 0,
         active: true,
     });
 
-    const getCategories = async (): Promise<IItemCategories[]> => {
+    const getCategories = async (): Promise<IItemMenuSection[]> => {
         try {
-            const categories = await fetchData(API_BASE_URL + 'itemCategory/getItemCategories');
+            const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections');
             return categories;
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -62,7 +62,7 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
                 name: '',
                 amount: 0,
                 isMenuItem: false,
-                itemCategories: [],
+                menuSections: [],
                 price: 0,
                 active: false,
             };
@@ -93,7 +93,7 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
     function handleSelectChange(newValue: MultiValue<{ value: string; label: string; }>): void {
         setItem(prevItem => ({
             ...prevItem,
-            itemCategories: newValue.map(option => option.value),
+            menuSections: newValue.map(option => option.value),
         }));
     }
 

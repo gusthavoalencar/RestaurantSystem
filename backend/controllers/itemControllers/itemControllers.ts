@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Item from "../../models/item";
-import ItemCategory from "../../models/itemCategory";
+import ItemCategory from "../../models/ItemMenuSection";
 
 const itemControllers = {
   //Gets all items

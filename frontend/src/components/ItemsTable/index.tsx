@@ -9,7 +9,7 @@ interface IItem {
     name: string;
     amount?: number;
     isMenuItem: boolean;
-    itemCategories: string[];
+    menuSections: string[];
     price?: number;
     active: boolean;
 }

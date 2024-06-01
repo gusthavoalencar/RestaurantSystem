@@ -6,7 +6,8 @@ export interface IItem extends mongoose.Document {
   name: string;
   amount: number;
   isMenuItem: boolean;
-  itemCategories: string[];
+  menuSection: string[];
+  MenuCategory: string;
   price: number;
   active: boolean;
 }
@@ -19,7 +20,13 @@ const itemSchema = new Schema(
       required: false
     },
     isMenuItem: { type: Boolean, required: [true, "isMenuItem boolean value is required"] },
-    itemCategories: { type: [String], required: false },
+    menuSection: { type: [String], required: false },
+    MenuCategory: {
+      type: String,
+      required: function (this: IItem) {
+        return this.isMenuItem ? [true, "MenuCategory is required if isMenuItem is true"] : false;
+      }
+    },
     price: {
       type: Number,
       required: false
