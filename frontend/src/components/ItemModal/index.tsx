@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import "./index.css";
 import { ChangeEvent, useEffect, useState } from 'react';
-import Select, { MultiValue } from 'react-select';
+import Select, { MultiValue, SingleValue } from 'react-select';
 import { API_BASE_URL } from '../../config/config';
 
 interface CreateItemModalProps {
@@ -10,7 +10,7 @@ interface CreateItemModalProps {
     onHide: () => void;
 }
 
-interface IItemCategories {
+interface IItemMenuSection {
     name: string;
     active: boolean;
 }
@@ -19,26 +19,35 @@ interface IItem {
     name: string;
     amount: number;
     isMenuItem: boolean;
-    itemCategories: string[];
+    menuSections: string[];
+    menuCategory: string;
     price: number;
     active: boolean;
 }
 
 const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
 
-    const [categories, setCategories] = useState<IItemCategories[]>([]);
+    const [menuSections, setMenuSections] = useState<IItemMenuSection[]>([]);
     const [item, setItem] = useState<IItem>({
         name: '',
         amount: 0,
         isMenuItem: false,
-        itemCategories: [],
+        menuSections: [],
+        menuCategory: '',
         price: 0,
         active: true,
     });
 
-    const getCategories = async (): Promise<IItemCategories[]> => {
+    const menuCategories = [
+        { value: 'Starters', label: 'Starters' },
+        { value: 'Mains', label: 'Mains' },
+        { value: 'Desserts', label: 'Desserts' },
+        { value: 'Drinks', label: 'Drinks' }
+    ];
+
+    const getCategories = async (): Promise<IItemMenuSection[]> => {
         try {
-            const categories = await fetchData(API_BASE_URL + 'itemCategory/getItemCategories');
+            const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections');
             return categories;
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -62,7 +71,8 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
                 name: '',
                 amount: 0,
                 isMenuItem: false,
-                itemCategories: [],
+                menuSections: [],
+                menuCategory: '',
                 price: 0,
                 active: false,
             };
@@ -84,16 +94,23 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
     useEffect(() => {
         const fetchItems = async () => {
             const categories = await getCategories();
-            setCategories(categories);
+            setMenuSections(categories);
         };
 
         fetchItems();
     }, []);
 
-    function handleSelectChange(newValue: MultiValue<{ value: string; label: string; }>): void {
+    function handleMenuSectionSelectChange(newValue: MultiValue<{ value: string; label: string; }>): void {
         setItem(prevItem => ({
             ...prevItem,
-            itemCategories: newValue.map(option => option.value),
+            menuSections: newValue.map(option => option.value),
+        }));
+    }
+
+    function handleMenuCategoryChange(newValue: SingleValue<{ value: string; label: string }>): void {
+        setItem(prevItem => ({
+            ...prevItem,
+            menuCategory: newValue ? newValue.value : '',
         }));
     }
 
@@ -142,16 +159,6 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
                                 <input type="number" className="form-control" placeholder="Amount" aria-label="amount" id="amount" value={item.amount} onChange={handleInputChange}></input>
                             </div>
 
-                            <label className="mb-1" htmlFor="Categories:">Categories:</label>
-                            <Select
-                                isMulti
-                                name="colors"
-                                options={categories.map(category => ({ value: category.name, label: category.name }))}
-                                className="basic-multi-select mb-3"
-                                classNamePrefix="select"
-                                onChange={handleSelectChange}
-                            />
-
                             <label className="mb-1" htmlFor="price">Price:</label>
                             <div className="input-group mb-3">
                                 <input type="number" className="form-control" placeholder="Price" aria-label="price" id="price" value={item.price} onChange={handleInputChange}></input>
@@ -163,6 +170,33 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
                                     Menu Item
                                 </label>
                             </div>
+
+                            {item.isMenuItem && (
+                                <>
+                                    <label className="mb-1" htmlFor="menuSections">
+                                        Menu Sections:
+                                    </label>
+                                    <Select
+                                        isMulti
+                                        name="categories"
+                                        options={menuSections.map(section => ({ value: section.name, label: section.name }))}
+                                        className="basic-multi-select mb-3"
+                                        classNamePrefix="select"
+                                        onChange={handleMenuSectionSelectChange}
+                                    />
+
+                                    <label className="mb-1" htmlFor="category">
+                                        Menu Category:
+                                    </label>
+                                    <Select
+                                        name="categories"
+                                        options={menuCategories}
+                                        className="basic-select mb-3"
+                                        classNamePrefix="select"
+                                        onChange={handleMenuCategoryChange}
+                                    />
+                                </>
+                            )}
 
                             <div className="form-check form-switch">
                                 <input className="form-check-input" type="checkbox" id="active" onChange={handleInputChange} checked={item.active}></input>

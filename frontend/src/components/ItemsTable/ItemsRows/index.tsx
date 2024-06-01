@@ -4,8 +4,9 @@ interface IItem {
     _id: string;
     name: string;
     amount?: number;
+    menuCategory: string;
     isMenuItem: boolean;
-    itemCategories: string[];
+    menuSections: string[];
     price?: number;
     active: boolean;
 }
@@ -30,7 +31,11 @@ const ItemsRows = ({ items }: ItemsRowsProps) => {
                                     {item.name}
                                 </div>
                                 <div className="col text-center">
-                                    <span>{item.itemCategories.join(', ')}</span>
+                                    <span>
+                                        {item.menuSections && item.menuSections.length > 0
+                                            ? item.menuSections.join(', ')
+                                            : null}
+                                    </span>
                                 </div>
                                 <div className="col text-center">
                                     {item.amount}
