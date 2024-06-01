@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Item from "../../models/item";
-import ItemCategory from "../../models/ItemMenuSection";
+import ItemMenuSection from "../../models/ItemMenuSection";
 
 const itemControllers = {
   //Gets all items
@@ -33,13 +33,14 @@ const itemControllers = {
         return res.status(400).json({ error: "Item already exists" });
       }
 
-      const existingCategories = await ItemCategory.find({ name: { $in: item.itemCategories } });
+      const existingMenuSections = await ItemMenuSection.find({ name: { $in: item.menuSections } });
 
-      if (existingCategories.length !== item.itemCategories.length) {
-        const missingCategories = item.itemCategories.filter(
-          (categoryName: string) => !existingCategories.some((dbCategory) => dbCategory.name == categoryName)
+      if (existingMenuSections.length !== item.menuSections.length) {
+        const missingMenuSections = item.menuSections.filter(
+          (menuSectionName: string) =>
+            !existingMenuSections.some((dbMenuSection) => dbMenuSection.name == menuSectionName)
         );
-        return res.status(400).json({ error: `Item Category not found: ${missingCategories.join(", ")}` });
+        return res.status(400).json({ error: `Item Menu Sections not found: ${missingMenuSections.join(", ")}` });
       }
 
       const savedItem = await new Item(item).save();
