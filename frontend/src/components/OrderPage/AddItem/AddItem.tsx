@@ -17,6 +17,8 @@ interface IItem {
     name: string;
     amount?: number;
     menuCategory: string;
+    isMultiOptions: boolean;
+    options: string[];
     isMenuItem: boolean;
     menuSections: string[];
     price?: number;
