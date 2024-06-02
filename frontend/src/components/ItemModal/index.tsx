@@ -19,6 +19,8 @@ interface IItem {
     name: string;
     amount: number;
     isMenuItem: boolean;
+    isMultiOptions: boolean;
+    options: string[];
     menuSections: string[];
     menuCategory: string;
     price: number;
@@ -33,10 +35,14 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
         amount: 0,
         isMenuItem: false,
         menuSections: [],
+        isMultiOptions: false,
+        options: [],
         menuCategory: '',
         price: 0,
         active: true,
     });
+
+    const [optionValue, setOptionValue] = useState('');
 
     const menuCategories = [
         { value: 'Starters', label: 'Starters' },
@@ -72,6 +78,8 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
                 amount: 0,
                 isMenuItem: false,
                 menuSections: [],
+                isMultiOptions: false,
+                options: [],
                 menuCategory: '',
                 price: 0,
                 active: false,
@@ -137,6 +145,21 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
         }
     }
 
+    function handleAddOptionClick() {
+        setItem(prevItem => ({
+            ...prevItem,
+            options: [...prevItem.options, optionValue],
+        }));
+        setOptionValue('');
+    }
+
+    function handleDeleteOptionClick(optionToDelete: string) {
+        setItem(prevItem => ({
+            ...prevItem,
+            options: prevItem.options.filter(option => option !== optionToDelete),
+        }));
+    }
+
     return (
         <>
             <Modal show={show} onHide={onHide} dialogClassName="custom-modal-dialog" contentClassName="custom-modal-content">
@@ -173,18 +196,6 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
 
                             {item.isMenuItem && (
                                 <>
-                                    <label className="mb-1" htmlFor="menuSections">
-                                        Menu Sections:
-                                    </label>
-                                    <Select
-                                        isMulti
-                                        name="categories"
-                                        options={menuSections.map(section => ({ value: section.name, label: section.name }))}
-                                        className="basic-multi-select mb-3"
-                                        classNamePrefix="select"
-                                        onChange={handleMenuSectionSelectChange}
-                                    />
-
                                     <label className="mb-1" htmlFor="category">
                                         Menu Category:
                                     </label>
@@ -195,10 +206,66 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
                                         classNamePrefix="select"
                                         onChange={handleMenuCategoryChange}
                                     />
+
+                                    <label className="mb-1" htmlFor="menuSections">
+                                        Menu Sections:
+                                    </label>
+                                    <Select
+                                        isMulti
+                                        name="menuSections"
+                                        options={menuSections.map(section => ({ value: section.name, label: section.name }))}
+                                        className="basic-multi-select mb-3"
+                                        classNamePrefix="select"
+                                        onChange={handleMenuSectionSelectChange}
+                                    />
+
+                                    <div className="form-check mb-3">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            checked={item.isMultiOptions}
+                                            id="isMultiOptions"
+                                            onChange={handleInputChange}>
+                                        </input>
+                                        <label className="form-check-label" htmlFor="isMultiOptions">
+                                            Multi Options
+                                        </label>
+                                    </div>
+
+                                    {item.isMultiOptions && (
+                                        <>
+                                            <div className='row'>
+                                                <label className="mb-1" htmlFor="name">Option:</label>
+                                                <div className="input-group mb-3">
+                                                    <input type="text"
+                                                        className="form-control"
+                                                        placeholder="Option name"
+                                                        aria-label="optionInput"
+                                                        id="optionInput"
+                                                        value={optionValue}
+                                                        onChange={(e) => setOptionValue(e.target.value)}
+                                                        aria-describedby="addOption">
+                                                    </input>
+                                                    <button className="btn mainGreenBgColor text-white" type="button" id="addOption" onClick={handleAddOptionClick}>Add</button>
+                                                </div>
+                                            </div>
+
+                                            {item.options.map((option, index) => (
+                                                <div className='row' key={index}>
+                                                    <div className="col-10">
+                                                        <p>{option}</p>
+                                                    </div>
+                                                    <div className="col-2">
+                                                        <button className="btn btn-danger" type="button" onClick={() => handleDeleteOptionClick(option)}>X</button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </>
+                                    )}
                                 </>
                             )}
 
-                            <div className="form-check form-switch">
+                            <div className="form-check form-switch mt-2">
                                 <input className="form-check-input" type="checkbox" id="active" onChange={handleInputChange} checked={item.active}></input>
                                 <label className="form-check-label" htmlFor="active">Active</label>
                             </div>

@@ -8,6 +8,8 @@ interface IItem {
     name: string;
     amount?: number;
     isMenuItem: boolean;
+    isMultiOptions: boolean;
+    options: string[];
     menuSections: string[];
     menuCategory: string;
     price?: number;
