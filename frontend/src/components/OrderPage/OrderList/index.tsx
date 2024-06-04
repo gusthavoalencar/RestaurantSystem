@@ -19,9 +19,10 @@ interface IItem {
 interface OrderListProps {
     onAddItemClick: React.MouseEventHandler<HTMLButtonElement>;
     orderItems: IItem[];
+    removeItemFromOrder: (item: IItem) => void;
 }
 
-const OrderList = ({ onAddItemClick, orderItems }: OrderListProps) => {
+const OrderList = ({ onAddItemClick, orderItems, removeItemFromOrder }: OrderListProps) => {
 
     return (
         <>
@@ -45,16 +46,16 @@ const OrderList = ({ onAddItemClick, orderItems }: OrderListProps) => {
 
             <div className="row p-0 m-0 me-4">
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Starters" orderItems={orderItems} />
+                    <OrderItemList title="Starters" orderItems={orderItems} removeItemFromOrder={removeItemFromOrder} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Mains" orderItems={orderItems} />
+                    <OrderItemList title="Mains" orderItems={orderItems} removeItemFromOrder={removeItemFromOrder} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Desserts" orderItems={orderItems} />
+                    <OrderItemList title="Desserts" orderItems={orderItems} removeItemFromOrder={removeItemFromOrder} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Drinks" orderItems={orderItems} />
+                    <OrderItemList title="Drinks" orderItems={orderItems} removeItemFromOrder={removeItemFromOrder} />
                 </div>
 
             </div>
