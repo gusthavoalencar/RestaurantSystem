@@ -1,15 +1,18 @@
 import { Button } from "react-bootstrap";
 import PageTitle from "../../PageTitle";
 import "./AddItem.css";
-import { API_BASE_URL } from "../../../config/config";
-import { useState, useEffect } from "react";
 import { FaChevronLeft } from "react-icons/fa6";
 import ItemContainer from "../ItemContainer/ItemContainer";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { v4 as uuidv4 } from 'uuid';
+
 
 interface AddItemProps {
     onBackButtonClick: React.MouseEventHandler<HTMLButtonElement>;
     addItemToOrder: (item: IItem) => void;
     orderItems: IItem[];
+    removeItemFromOrder: (item: IItem) => void;
+    items: IItem[];
 }
 
 interface IItem {
@@ -25,36 +28,8 @@ interface IItem {
     active: boolean;
 }
 
-const AddItem = ({ onBackButtonClick, addItemToOrder, orderItems }: AddItemProps) => {
-    const [items, setItems] = useState<IItem[]>([]);
+const AddItem = ({ onBackButtonClick, addItemToOrder, removeItemFromOrder, orderItems, items }: AddItemProps) => {
 
-    const fetchData = async (url: string) => {
-        const response = await fetch(url);
-        const json = await response.json();
-
-        return json;
-    };
-
-
-    const getItems = async (): Promise<IItem[]> => {
-        try {
-            const items = await fetchData(API_BASE_URL + 'item/getitems');
-
-            return items;
-        } catch (error) {
-            console.error("Error fetching items:", error);
-            return [];
-        }
-    };
-
-    useEffect(() => {
-        const fetchItems = async () => {
-            const items = await getItems();
-            setItems(items);
-        };
-
-        fetchItems();
-    }, []);
 
     return (
         <>
@@ -83,8 +58,10 @@ const AddItem = ({ onBackButtonClick, addItemToOrder, orderItems }: AddItemProps
                     </div>
                     <div className="shadow rounded-bottom addItemItemListBody">
                         {orderItems.map((orderItem) => (
-                            <div className="row m-0" key={orderItem._id}>
-                                {orderItem.name}
+                            <div className="ps-3 py-2 border-bottom" key={`${orderItem._id}_${uuidv4()}`}>
+                                <span>{orderItem.name}</span>
+                                <span className="float-end pe-2 pointer text-danger"><RiDeleteBin5Line onClick={() => removeItemFromOrder(orderItem)} /></span>
+
                             </div>
                         ))}
                     </div>
@@ -93,7 +70,7 @@ const AddItem = ({ onBackButtonClick, addItemToOrder, orderItems }: AddItemProps
                 <div className="col-10">
                     <div className="row m-0">
                         {items.map(dbItem => (
-                            <div className="col-3 my-3" key={dbItem._id} onClick={() => addItemToOrder(dbItem)}>
+                            <div className="col-3 my-3" key={`${dbItem._id}_${uuidv4()}`} onClick={() => addItemToOrder(dbItem)}>
                                 <ItemContainer item={dbItem} />
                             </div>
                         ))}

@@ -6,7 +6,15 @@ const itemControllers = {
   //Gets all items
   getItems: async (req: Request, res: Response) => {
     try {
-      const items = await Item.find();
+      const query = req.query;
+      let items;
+
+      if (query.isMenuItem !== undefined) {
+        const isMenuItem = query.isMenuItem === "true";
+        items = await Item.find({ isMenuItem });
+      } else {
+        items = await Item.find();
+      }
       return res.status(200).json(items);
     } catch (error) {
       return res.status(500).json({ error: (error as Error).message });
