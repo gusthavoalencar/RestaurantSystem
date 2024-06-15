@@ -12,12 +12,7 @@ const fetchItemsInSellOrder = async (items: ISellOrderItems[]): Promise<ISellOrd
       throw new Error(`The following items were not found in the database: ${missingItemIds.join(", ")}`);
     }
 
-    const orderItems = items.map((item) => ({
-      id: item.id,
-      quantity: item.quantity
-    }));
-
-    return orderItems;
+    return items;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error("There was an error fetching the items in the order: " + error.message);

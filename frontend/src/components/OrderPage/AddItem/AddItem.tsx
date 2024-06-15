@@ -8,11 +8,22 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 interface AddItemProps {
+    children?: React.ReactNode;
     onBackButtonClick: React.MouseEventHandler<HTMLButtonElement>;
     addItemToOrder: (item: IItem) => void;
-    orderItems: IItem[];
-    removeItemFromOrder: (item: IItem) => void;
+    sellOrder: ISellOrder;
+    removeItemFromOrder: (orderItem: ISellOrderItem) => void;
     items: IItem[];
+}
+
+interface ISellOrderItem {
+    id: string;
+    name: string;
+    menuCategory: string;
+    quantity: number;
+    isMultiOptions: boolean;
+    selectedOption?: string;
+    price: number;
 }
 
 interface IItem {
@@ -28,7 +39,19 @@ interface IItem {
     active: boolean;
 }
 
-const AddItem = ({ onBackButtonClick, addItemToOrder, removeItemFromOrder, orderItems, items }: AddItemProps) => {
+interface ISellOrder {
+    items: ISellOrderItem[];
+    comment?: string;
+    status: string;
+    type: "delivery" | "dine-in";
+    tableNumber?: number;
+    address?: string;
+    city?: string;
+    region?: string;
+    country?: string;
+}
+
+const AddItem = ({ onBackButtonClick, addItemToOrder, removeItemFromOrder, sellOrder, items }: AddItemProps) => {
 
 
     return (
@@ -54,14 +77,14 @@ const AddItem = ({ onBackButtonClick, addItemToOrder, removeItemFromOrder, order
             <div className="row p-0 m-0">
                 <div className="col-2 p-0 m-0">
                     <div className="grayBackground grayText rounded-top">
-                        <p className="m-0 text-center py-2">Order Items</p>
+                        <p className="m-0 text-center py-2">New Items</p>
                     </div>
                     <div className="shadow rounded-bottom addItemItemListBody">
-                        {orderItems.map((orderItem) => (
-                            <div className="ps-3 py-2 border-bottom" key={`${orderItem._id}_${uuidv4()}`}>
+                        {sellOrder.items.map((orderItem) => (
+                            <div className="ps-3 py-2 border-bottom" key={orderItem.id}>
                                 <span>{orderItem.name}</span>
+                                <span className="quantityValue text-secondary">{`${orderItem.quantity > 1 ? '   x' + orderItem.quantity : ''}`}</span>
                                 <span className="float-end pe-2 pointer text-danger"><RiDeleteBin5Line onClick={() => removeItemFromOrder(orderItem)} /></span>
-
                             </div>
                         ))}
                     </div>

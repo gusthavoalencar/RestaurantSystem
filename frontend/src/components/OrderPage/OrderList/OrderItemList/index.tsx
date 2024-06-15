@@ -1,45 +1,53 @@
 import "./index.css";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { v4 as uuidv4 } from 'uuid';
 
-interface IItem {
-    _id: string;
+interface ISellOrderItem {
+    id: string;
     name: string;
-    amount?: number;
-    isMenuItem: boolean;
-    isMultiOptions: boolean;
-    options: string[];
     menuCategory: string;
-    menuSections: string[];
-    price?: number;
-    active: boolean;
+    quantity: number;
+    isMultiOptions: boolean;
+    selectedOption?: string;
+    price: number;
 }
 
 interface OrderItemListProps {
     title: string;
-    orderItems: IItem[];
-    removeItemFromOrder: (item: IItem) => void;
+    sellOrder: ISellOrder;
+    removeItemFromOrder: (item: ISellOrderItem) => void;
 }
 
-const OrderItemList = ({ title, orderItems, removeItemFromOrder }: OrderItemListProps) => {
+interface ISellOrder {
+    items: ISellOrderItem[];
+    comment?: string;
+    status: string;
+    type: "delivery" | "dine-in";
+    tableNumber?: number;
+    address?: string;
+    city?: string;
+    region?: string;
+    country?: string;
+}
 
-    let items: IItem[] = [];
+const OrderItemList = ({ title, sellOrder, removeItemFromOrder }: OrderItemListProps) => {
+
+    let items: ISellOrderItem[] = [];
 
     switch (title) {
         case 'Starters':
-            items = orderItems.filter(item => item.menuCategory === 'Starters');
+            items = sellOrder.items.filter(item => item.menuCategory === 'Starters');
             break;
         case 'Mains':
-            items = orderItems.filter(item => item.menuCategory === 'Mains');
+            items = sellOrder.items.filter(item => item.menuCategory === 'Mains');
             break;
         case 'Desserts':
-            items = orderItems.filter(item => item.menuCategory === 'Desserts');
+            items = sellOrder.items.filter(item => item.menuCategory === 'Desserts');
             break;
         case 'Drinks':
-            items = orderItems.filter(item => item.menuCategory === 'Drinks');
+            items = sellOrder.items.filter(item => item.menuCategory === 'Drinks');
             break;
         default:
-            items = orderItems;
+            items = sellOrder.items;
             break;
     }
 
@@ -50,8 +58,9 @@ const OrderItemList = ({ title, orderItems, removeItemFromOrder }: OrderItemList
             </div>
             <div className="shadow rounded-bottom orderItemListBody">
                 {items.map(item => (
-                    <div className="ps-3 py-2 border-bottom" key={`${item._id}_${uuidv4()}`}>
+                    <div className="ps-3 py-2 border-bottom" key={item.id}>
                         <span>{item.name}</span>
+                        <span className="quantityValue text-secondary">{`${item.quantity > 1 ? '   x' + item.quantity : ''}`}</span>
                         <span className="float-end pe-2 pointer text-danger"><RiDeleteBin5Line onClick={() => removeItemFromOrder(item)} /></span>
                     </div>
                 ))}

@@ -1,4 +1,8 @@
 .orderItemListBody {
-  height: 70vh;
+  height: 65vh;
   overflow: auto;
+}
+
+.quantityValue {
+  font-size: 14px;
 }

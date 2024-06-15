@@ -1,9 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
-import Item, { IItem } from "./item";
 
 export interface ISellOrderItems {
-  id: mongoose.Types.ObjectId | IItem;
+  id: mongoose.Types.ObjectId;
+  name: string;
+  menuCategory: string;
   quantity: number;
+  isMultiOptions: boolean;
+  selectedOption?: string;
+  price: number;
 }
 
 export interface ISellOrder extends Document {
@@ -12,7 +16,6 @@ export interface ISellOrder extends Document {
   status: "pending" | "complete" | "cancelled" | "hidden" | "void";
   type: "delivery" | "dine-in";
   tableNumber: number;
-  customerNumber: number;
   address: string;
   city: string;
   region: string;
@@ -30,6 +33,11 @@ const sellOrderSchema = new Schema<ISellOrder>(
     items: [
       {
         id: { type: Schema.Types.ObjectId, ref: "Item" },
+        name: { type: String, required: true },
+        menuCategory: { type: String, required: true },
+        price: { type: Number, required: true },
+        isMultiOptions: { type: Boolean, required: true },
+        selectedOption: { type: String },
         quantity: { type: Number, required: true }
       }
     ],
@@ -47,12 +55,6 @@ const sellOrderSchema = new Schema<ISellOrder>(
       default: ""
     },
     tableNumber: {
-      type: Number,
-      required: function (this: ISellOrder) {
-        return this.type === "dine-in";
-      }
-    },
-    customerNumber: {
       type: Number,
       required: function (this: ISellOrder) {
         return this.type === "dine-in";
@@ -85,19 +87,6 @@ const sellOrderSchema = new Schema<ISellOrder>(
   },
   { timestamps: true }
 );
-
-sellOrderSchema.pre<ISellOrder>("save", async function (next) {
-  const itemIds = this.items.map((item) => (item.id instanceof mongoose.Types.ObjectId ? item.id : item.id._id));
-  const items = await Item.find({ _id: { $in: itemIds } });
-  const total = this.items.reduce((accumulator, orderItem) => {
-    const item = items.find((item) =>
-      item._id.equals(orderItem.id instanceof mongoose.Types.ObjectId ? orderItem.id : orderItem.id._id)
-    )!;
-    return accumulator + item.price * orderItem.quantity;
-  }, 0);
-  this.total = total;
-  next();
-});
 
 const SellOrder = mongoose.model<ISellOrder>("SellOrder", sellOrderSchema);
 export { ISellOrder as SellOrderItem, SellOrder };
