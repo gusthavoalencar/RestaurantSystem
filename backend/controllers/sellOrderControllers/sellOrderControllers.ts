@@ -11,7 +11,6 @@ const sellOrderControllers = {
         status,
         type,
         tableNumber,
-        customerNumber,
         address,
         city,
         region,
@@ -22,7 +21,6 @@ const sellOrderControllers = {
         status: string;
         type: "delivery" | "dine-in";
         tableNumber?: number;
-        customerNumber?: number;
         address?: string;
         city?: string;
         region?: string;
@@ -37,7 +35,6 @@ const sellOrderControllers = {
         status,
         type,
         tableNumber,
-        customerNumber,
         address,
         city,
         region,

@@ -2,27 +2,76 @@ import { Button } from "react-bootstrap";
 import { TfiPlus } from "react-icons/tfi";
 import PageTitle from "../../PageTitle";
 import OrderItemList from "./OrderItemList";
+import { MdFormatListBulletedAdd } from "react-icons/md";
+import { Dispatch, SetStateAction } from "react";
+import { API_BASE_URL } from "../../../config/config";
 
-interface IItem {
-    _id: string;
+interface ISellOrderItem {
+    id: string;
     name: string;
-    amount?: number;
-    isMenuItem: boolean;
-    isMultiOptions: boolean;
-    options: string[];
-    menuSections: string[];
     menuCategory: string;
-    price?: number;
-    active: boolean;
+    quantity: number;
+    isMultiOptions: boolean;
+    selectedOption?: string;
+    price: number;
+}
+
+interface ISellOrder {
+    items: ISellOrderItem[];
+    comment?: string;
+    status: string;
+    type: "delivery" | "dine-in";
+    tableNumber?: number;
+    address?: string;
+    city?: string;
+    region?: string;
+    country?: string;
 }
 
 interface OrderListProps {
+    children?: React.ReactNode;
     onAddItemClick: React.MouseEventHandler<HTMLButtonElement>;
-    orderItems: IItem[];
-    removeItemFromOrder: (item: IItem) => void;
+    sellOrder: ISellOrder;
+    removeItemFromOrder: (item: ISellOrderItem) => void;
+    setSellOrder: Dispatch<SetStateAction<ISellOrder>>;
+    setComment: Dispatch<SetStateAction<string>>;
+    comment: string;
 }
 
-const OrderList = ({ onAddItemClick, orderItems, removeItemFromOrder }: OrderListProps) => {
+const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, setComment, setSellOrder }: OrderListProps) => {
+    const total = sellOrder.items.reduce((acc, item) => {
+        if (item.price !== undefined) {
+            return acc + (item.price * item.quantity);
+        }
+        return acc;
+    }, 0);
+
+    const createSellOrder = async (): Promise<ISellOrder> => {
+        try {
+            const result = await postData(API_BASE_URL + 'sellorder/createsellorder', sellOrder);
+            return result;
+        } catch (error) {
+            console.error("Error creating sellOrder:", error);
+            return {
+                items: [],
+                comment: "",
+                status: "pending",
+                type: "dine-in",
+            };
+        }
+    };
+
+    const postData = async (url: string, data: ISellOrder) => {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        const json = await response.json();
+        return json;
+    };
 
     return (
         <>
@@ -33,12 +82,12 @@ const OrderList = ({ onAddItemClick, orderItems, removeItemFromOrder }: OrderLis
                 <div className="col-6 p-0 m-0">
                     <Button
                         variant="link"
-                        className="mainGreenBgColor float-end pt-2 pb-2 ps-3 pe-3 text-white rounded-4 me-5 fw-light text-center pointer text-decoration-none"
+                        className="mainGreenBgColor float-end py-2 px-3 text-white rounded-4 me-5 fw-light text-center pointer text-decoration-none"
                         onClick={onAddItemClick}
                     >
                         <p className="fs-5 m-0">
-                            <TfiPlus className="fs-4 me-2" />
-                            Add
+                            <MdFormatListBulletedAdd className="fs-4 me-2" />
+                            Add Item
                         </p>
                     </Button>
                 </div>
@@ -46,18 +95,48 @@ const OrderList = ({ onAddItemClick, orderItems, removeItemFromOrder }: OrderLis
 
             <div className="row p-0 m-0 me-4">
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Starters" orderItems={orderItems} removeItemFromOrder={removeItemFromOrder} />
+                    <OrderItemList title="Starters" sellOrder={sellOrder} removeItemFromOrder={removeItemFromOrder} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Mains" orderItems={orderItems} removeItemFromOrder={removeItemFromOrder} />
+                    <OrderItemList title="Mains" sellOrder={sellOrder} removeItemFromOrder={removeItemFromOrder} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Desserts" orderItems={orderItems} removeItemFromOrder={removeItemFromOrder} />
+                    <OrderItemList title="Desserts" sellOrder={sellOrder} removeItemFromOrder={removeItemFromOrder} />
                 </div>
                 <div className="col-3 p-0 m-0 px-3">
-                    <OrderItemList title="Drinks" orderItems={orderItems} removeItemFromOrder={removeItemFromOrder} />
+                    <OrderItemList title="Drinks" sellOrder={sellOrder} removeItemFromOrder={removeItemFromOrder} />
                 </div>
+            </div>
 
+            <div className="row m-0 p-0">
+                <div className="col-4 mt-4">
+                    <div className="form-group">
+                        <textarea
+                            className="form-control shadow"
+                            id="comment"
+                            placeholder="Comment"
+                            rows={3}
+                            style={{ resize: "none" }}
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                        ></textarea>
+                    </div>
+                </div>
+                <div className="col float-end mt-5 p-0">
+                    <Button className="mainGreenBgColor float-end py-2 pe-3 text-white rounded-4 fw-light text-center pointer text-decoration-none border-0 me-5"><p className="fs-5 m-0"
+                        onClick={() => {
+                            setSellOrder({
+                                ...sellOrder,
+                                comment: comment
+                            });
+
+                            createSellOrder();
+                        }}>
+                        <TfiPlus className="fs-4 me-2" />
+                        Create Order
+                    </p></Button>
+                    <span className="float-end me-3 fs-4">Total:  ${total > 0 ? total.toFixed(2) : 0}</span>
+                </div>
             </div>
         </>
     );
