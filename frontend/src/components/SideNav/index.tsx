@@ -55,7 +55,9 @@ const SideNav = () => {
         <>
             <div className="row m-0 p-0 col-10 container vh-100">
                 <div className="m-0 p-0 vh-100">
-                    <CompanyLogo />
+                    <div className="mb-5 mt-4">
+                        <CompanyLogo />
+                    </div>
 
                     <div className="NavContainer mx-auto">
                         {renderedNavButtons}

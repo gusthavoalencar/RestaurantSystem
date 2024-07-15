@@ -4,6 +4,7 @@ import "./index.css";
 import { ChangeEvent, useEffect, useState } from 'react';
 import Select, { MultiValue, SingleValue } from 'react-select';
 import { API_BASE_URL } from '../../config/config';
+import { useAuth } from '../../context/AuthProvider';
 
 interface CreateItemModalProps {
     show: boolean;
@@ -28,7 +29,7 @@ interface IItem {
 }
 
 const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
-
+    const { token, logout } = useAuth();
     const [menuSections, setMenuSections] = useState<IItemMenuSection[]>([]);
     const [item, setItem] = useState<IItem>({
         name: '',
@@ -53,7 +54,7 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
 
     const getCategories = async (): Promise<IItemMenuSection[]> => {
         try {
-            const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections');
+            const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections', token);
             return categories;
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -61,8 +62,18 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
         }
     };
 
-    const fetchData = async (url: string) => {
-        const response = await fetch(url);
+    const fetchData = async (url: string, authToken: string | null) => {
+        const response = await fetch(url, {
+            headers: {
+                'authorization': `${authToken}`,
+                'content-type': 'application/json'
+            }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            logout();
+            return;
+        }
         const json = await response.json();
         return json;
     };
