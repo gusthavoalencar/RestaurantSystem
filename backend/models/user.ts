@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
+import { PassportLocalDocument } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
 
 const Schema = mongoose.Schema;
 
-export interface IUser extends mongoose.Document {
+export interface IUser extends PassportLocalDocument {
   name: string;
   surname: string;
   email: string;
   status: string;
-  password: string;
   role: string;
 }
 
@@ -17,8 +17,18 @@ const userSchema = new Schema(
     name: { type: String, required: [true, "Name cannot be empty"] },
     surname: { type: String, required: [true, "Surname cannot be empty"] },
     email: { type: String, required: [true, "Email cannot be empty"], unique: true },
-    status: { type: String, required: [true, "Status cannot be empty"] },
-    role: { type: String, required: [true, "Role cannot be empty"] }
+    status: {
+      type: String,
+      required: [true, "Status cannot be empty"],
+      enum: ["active", "inactive", "pending"],
+      default: "pending"
+    },
+    role: {
+      type: String,
+      required: [true, "Role cannot be empty"],
+      enum: ["waiter", "manager", "administrator"],
+      default: "waiter"
+    }
   },
   { timestamps: true }
 );

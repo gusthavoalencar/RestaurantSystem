@@ -6,6 +6,7 @@ import { TfiPlus } from "react-icons/tfi";
 import { API_BASE_URL } from "../../config/config";
 import CreateItemModal from "../../components/CreateItemModal";
 import ItemModal from "../../components/ItemModal";
+import { useAuth } from "../../context/AuthProvider";
 
 interface IItem {
     _id: string;
@@ -21,6 +22,7 @@ interface IItem {
 }
 
 const Inventory = () => {
+    const { token, logout } = useAuth();
     const headers = ['ID No.', 'Name', 'Type', 'Stock Amount'];
 
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -31,8 +33,18 @@ const Inventory = () => {
     const handleCreateItemModalClose = () => setShowCreateItemModal(false);
     const handleCreateItemModalShow = () => setShowCreateItemModal(true);
 
-    const fetchData = async (url: string) => {
-        const response = await fetch(url);
+    const fetchData = async (url: string, authToken: string | null) => {
+        const response = await fetch(url, {
+            headers: {
+                'authorization': `${authToken}`,
+                'content-type': 'application/json'
+            }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            logout();
+            return;
+        }
         const json = await response.json();
 
         return json;
@@ -42,7 +54,7 @@ const Inventory = () => {
 
     const getItems = async (): Promise<IItem[]> => {
         try {
-            const items = await fetchData(API_BASE_URL + 'item/getitems');
+            const items = await fetchData(API_BASE_URL + 'item/getitems', token);
 
             return items;
         } catch (error) {
