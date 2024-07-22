@@ -86,6 +86,7 @@ const Inventory = () => {
                 show={showCreateItemModal}
                 onHide={handleCreateItemModalClose}
                 selectedItem={selectedItem}
+                getItems={getItems}
             />
         </>
     );

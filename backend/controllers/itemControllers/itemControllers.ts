@@ -97,11 +97,10 @@ const itemControllers = {
     }
   },
 
-  //Deletes an item
-  //Add the Id as a query to the URL
+  //Deletes an item by id
   deleteItem: async (req: Request, res: Response) => {
     try {
-      const itemId = req.query.id;
+      const itemId = req.body._id;
       const deletedItem = await Item.findByIdAndDelete(itemId);
       if (!deletedItem) {
         return res.status(400).json({ error: "Item not found" });
