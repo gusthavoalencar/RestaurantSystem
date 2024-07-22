@@ -34,6 +34,7 @@ const itemControllers = {
   createItem: async (req: Request, res: Response) => {
     try {
       const item = req.body;
+      delete item._id;
 
       const existingItem = await Item.findOne({ name: item.name });
 
@@ -54,6 +55,43 @@ const itemControllers = {
       const savedItem = await new Item(item).save();
 
       return res.status(200).json(savedItem);
+    } catch (error) {
+      return res.status(500).json({ error: (error as Error).message });
+    }
+  },
+
+  //Edits an item
+  editItem: async (req: Request, res: Response) => {
+    try {
+      const itemId = req.body._id;
+      if (!itemId) {
+        return res.status(400).json({ error: "Item ID must be provided" });
+      }
+
+      const updateData = req.body;
+
+      const existingItem = await Item.findById(itemId);
+      if (!existingItem) {
+        return res.status(404).json({ error: "Item not found" });
+      }
+
+      if (updateData.menuSections) {
+        const existingMenuSections = await ItemMenuSection.find({ name: { $in: updateData.menuSections } });
+        if (existingMenuSections.length !== updateData.menuSections.length) {
+          const missingMenuSections = updateData.menuSections.filter(
+            (menuSectionName: string) =>
+              !existingMenuSections.some((dbMenuSection) => dbMenuSection.name == menuSectionName)
+          );
+          return res.status(400).json({ error: `Item Menu Sections not found: ${missingMenuSections.join(", ")}` });
+        }
+      }
+
+      const updatedItem = await Item.findByIdAndUpdate(itemId, updateData, { new: true });
+      if (!updatedItem) {
+        return res.status(500).json({ error: "Failed to update item" });
+      }
+
+      return res.status(200).json(updatedItem);
     } catch (error) {
       return res.status(500).json({ error: (error as Error).message });
     }

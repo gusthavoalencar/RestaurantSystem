@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Orders from "../../pages/Orders";
-import Inventory from "../../pages/Inventory";
+import Inventory from "../../pages/Inventory/Inventory";
 import Analytics from "../../pages/Analytics";
 import Management from "../../pages/Management";
 import CreateOrder from "../../pages/Orders/CreateOrder/CreateOrder";

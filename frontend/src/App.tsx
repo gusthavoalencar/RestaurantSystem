@@ -8,7 +8,7 @@ import Login from "./pages/Login/Login";
 import Forgotpassword from "./pages/Forgotpassword/Forgotpassword";
 import Resetpassword from "./pages/Resetpassword/Resetpassword";
 import Analytics from "./pages/Analytics";
-import Inventory from "./pages/Inventory";
+import Inventory from "./pages/Inventory/Inventory";
 import Management from "./pages/Management";
 import Orders from "./pages/Orders";
 import CreateOrder from "./pages/Orders/CreateOrder/CreateOrder";

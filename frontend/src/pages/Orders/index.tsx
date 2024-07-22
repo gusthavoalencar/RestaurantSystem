@@ -2,13 +2,47 @@ import { Button } from "react-bootstrap";
 import { TfiPlus } from "react-icons/tfi";
 import PageTitle from "../../components/PageTitle";
 import CreateOrderModal from "../../components/CreateOrderModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../global/config";
+import ItemsTable from "../../components/ItemsTable";
+import { ISellOrder } from "../../global/types";
+import { fetchData } from "../../global/functions";
+import { useAuth } from "../../context/AuthProvider";
 
 const Orders = () => {
+    const { token, logout } = useAuth();
     const [showCreateOrderModal, setShowCreateOrderModal] = useState(false);
     const handleCreateOrderModalClose = () => setShowCreateOrderModal(false);
     const handleCreateOrderModalShow = () => setShowCreateOrderModal(true);
+    const headers = ['ID No.', 'Type', 'Table No.', 'Created At', 'Total'];
+    const [selectedItem, setSelectedOrder] = useState<ISellOrder | null>(null);
 
+    const [orders, setOrders] = useState<ISellOrder[]>([]);
+
+    const getOrders = async (): Promise<ISellOrder[]> => {
+        try {
+            const items = await fetchData(API_BASE_URL + 'sellorder/getsellorders', token, logout);
+
+            return items;
+        } catch (error) {
+            console.error("Error fetching items:", error);
+            return [];
+        }
+    };
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            const orders = await getOrders();
+            setOrders(orders);
+        };
+
+        fetchOrders();
+    }, []);
+
+
+    const handleManageOrderClick = (order: ISellOrder) => {
+        setSelectedOrder(order);
+    };
 
     return (
         <>
@@ -24,8 +58,12 @@ const Orders = () => {
                         </p>
                     </Button>
                 </div>
-
             </div>
+            <ItemsTable
+                headers={headers}
+                orders={orders}
+                handleManageOrderClick={handleManageOrderClick}
+                type="order" />
             <CreateOrderModal
                 show={showCreateOrderModal}
                 onHide={handleCreateOrderModalClose}

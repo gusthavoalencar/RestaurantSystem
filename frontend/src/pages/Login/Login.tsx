@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthProvider';
-import { API_BASE_URL } from '../../config/config';
+import { API_BASE_URL } from '../../global/config';
 import CompanyLogo from '../../components/SideNav/CompanyLogo';
 
 interface ILoginCredentials {

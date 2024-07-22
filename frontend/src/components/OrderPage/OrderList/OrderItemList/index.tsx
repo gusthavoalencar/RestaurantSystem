@@ -1,15 +1,6 @@
 import "./index.css";
 import { RiDeleteBin5Line } from "react-icons/ri";
-
-interface ISellOrderItem {
-    id: string;
-    name: string;
-    menuCategory: string;
-    quantity: number;
-    isMultiOptions: boolean;
-    selectedOption?: string;
-    price: number;
-}
+import { ISellOrder, ISellOrderItem } from "../../../../global/types";
 
 interface OrderItemListProps {
     title: string;
@@ -17,17 +8,6 @@ interface OrderItemListProps {
     removeItemFromOrder: (item: ISellOrderItem) => void;
 }
 
-interface ISellOrder {
-    items: ISellOrderItem[];
-    comment?: string;
-    status: string;
-    type: "delivery" | "dine-in";
-    tableNumber?: number;
-    address?: string;
-    city?: string;
-    region?: string;
-    country?: string;
-}
 
 const OrderItemList = ({ title, sellOrder, removeItemFromOrder }: OrderItemListProps) => {
 
@@ -58,7 +38,7 @@ const OrderItemList = ({ title, sellOrder, removeItemFromOrder }: OrderItemListP
             </div>
             <div className="shadow rounded-bottom orderItemListBody">
                 {items.map(item => (
-                    <div className="ps-3 py-2 border-bottom" key={item.id}>
+                    <div className="ps-3 py-2 border-bottom" key={item._id}>
                         <span>{item.name}</span>
                         <span className="quantityValue text-secondary">{`${item.quantity > 1 ? '   x' + item.quantity : ''}`}</span>
                         <span className="float-end pe-2 pointer text-danger"><RiDeleteBin5Line onClick={() => removeItemFromOrder(item)} /></span>

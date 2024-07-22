@@ -38,7 +38,8 @@ const sellOrderControllers = {
         address,
         city,
         region,
-        country
+        country,
+        total: orderItems.reduce((acc, item) => acc + item.price, 0)
       });
       await sellOrder.save();
 
