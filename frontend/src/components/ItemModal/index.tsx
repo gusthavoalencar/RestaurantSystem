@@ -12,9 +12,10 @@ interface CreateItemModalProps {
     show: boolean;
     onHide: () => void;
     selectedItem?: IItem | null;
+    getItems: () => Promise<IItem[]>;
 }
 
-const ItemModal = ({ show, onHide, selectedItem }: CreateItemModalProps) => {
+const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProps) => {
     const { token, logout } = useAuth();
     const defaultItemState = {
         _id: '',
@@ -60,11 +61,15 @@ const ItemModal = ({ show, onHide, selectedItem }: CreateItemModalProps) => {
         try {
             const createdItem = await postData(API_BASE_URL + 'item/createItem', item, token, logout);
             return createdItem;
-            selectedItem = null;
-            setItem(defaultItemState);
         } catch (error) {
             console.error("Error creating item:", error);
             return defaultItemState;
+        }
+        finally {
+            onHide();
+            selectedItem = null;
+            setItem(defaultItemState);
+            getItems();
         }
     };
 
@@ -72,11 +77,32 @@ const ItemModal = ({ show, onHide, selectedItem }: CreateItemModalProps) => {
         try {
             const editedItem = await postData(API_BASE_URL + 'item/editItem', item, token, logout);
             return editedItem;
-            selectedItem = null;
-            setItem(defaultItemState);
+
         } catch (error) {
             console.error("Error editing item:", error);
             return defaultItemState;
+        }
+        finally {
+            onHide();
+            selectedItem = null;
+            setItem(defaultItemState);
+            getItems();
+        }
+    };
+
+    const deleteItem = async (): Promise<IItem> => {
+        try {
+            const deletedItem = await postData(API_BASE_URL + 'item/deleteItem', item, token, logout);
+            return deletedItem;
+        } catch (error) {
+            console.error("Error editing item:", error);
+            return defaultItemState;
+        }
+        finally {
+            onHide();
+            selectedItem = null;
+            setItem(defaultItemState);
+            getItems();
         }
     };
 
@@ -270,7 +296,12 @@ const ItemModal = ({ show, onHide, selectedItem }: CreateItemModalProps) => {
                             <Button className='col-5 mx-auto mainGreenBgColor border-0' onClick={createItem}>Create Item</Button>
                         )}
                         {selectedItem != null && (
-                            <Button className='col-5 mx-auto mainGreenBgColor border-0' onClick={editItem}>Edit Item</Button>
+                            <div className='row'>
+                                <div className='d-flex justify-content-center gap-3'>
+                                    <Button className='mainGreenBgColor border-0 w-50' onClick={editItem}>Edit Item</Button>
+                                    <Button className='bg-danger border-0' onClick={deleteItem}>Delete</Button>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </Modal.Body>

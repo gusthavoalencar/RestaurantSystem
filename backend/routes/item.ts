@@ -10,6 +10,6 @@ router.post("/createItem", authenticateToken, itemControllers.createItem);
 
 router.post("/editItem", authenticateToken, itemControllers.editItem);
 
-router.delete("/deleteItem", authenticateToken, itemControllers.deleteItem);
+router.post("/deleteItem", authenticateToken, itemControllers.deleteItem);
 
 export default router;
