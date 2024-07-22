@@ -1,46 +1,19 @@
 import { useEffect, useState } from "react";
 import OrderList from "../../../components/OrderPage/OrderList";
 import AddItem from "../../../components/OrderPage/AddItem/AddItem";
-import { API_BASE_URL } from "../../../config/config";
+import { API_BASE_URL } from "../../../global/config";
+import { fetchData } from "../../../global/functions";
+import { ISellOrder, IItem, ISellOrderItem } from "../../../global/types";
+import { useAuth } from "../../../context/AuthProvider";
 
-interface IItem {
-    _id: string;
-    name: string;
-    amount?: number;
-    isMenuItem: boolean;
-    isMultiOptions: boolean;
-    options: string[];
-    menuCategory: string;
-    menuSections: string[];
-    price?: number;
-    active: boolean;
-}
-
-interface ISellOrderItem {
-    id: string;
-    name: string;
-    menuCategory: string;
-    quantity: number;
-    isMultiOptions: boolean;
-    selectedOption?: string;
-    price: number;
-}
-
-interface ISellOrder {
-    items: ISellOrderItem[];
-    comment?: string;
-    status: string;
-    type: "delivery" | "dine-in";
-    tableNumber?: number;
-    address?: string;
-    city?: string;
-    region?: string;
-    country?: string;
-}
 
 const CreateOrder = () => {
+    const { token, logout } = useAuth();
     const [createOrderStep, setcreateOrderStep] = useState("orderList");
     const [sellOrder, setSellOrder] = useState<ISellOrder>({
+        _id: "",
+        createdAt: "",
+        total: 0,
         items: [],
         comment: "",
         status: "pending",
@@ -59,7 +32,7 @@ const CreateOrder = () => {
 
     const addItemToOrder = (item: IItem) => {
         setSellOrder(prevOrder => {
-            const existingItemIndex = prevOrder.items.findIndex(orderItem => orderItem.id === item._id);
+            const existingItemIndex = prevOrder.items.findIndex(orderItem => orderItem._id === item._id);
 
             if (existingItemIndex > -1) {
                 return {
@@ -70,7 +43,7 @@ const CreateOrder = () => {
                 };
             } else {
                 const newOrderItem: ISellOrderItem = {
-                    id: item._id,
+                    _id: item._id,
                     name: item.name,
                     quantity: 1,
                     menuCategory: item.menuCategory,
@@ -89,7 +62,7 @@ const CreateOrder = () => {
 
     const removeItemFromOrder = (orderItemToRemove: ISellOrderItem) => {
         setSellOrder(prevOrder => {
-            const existingItemIndex = prevOrder.items.findIndex(item => item.id === orderItemToRemove.id);
+            const existingItemIndex = prevOrder.items.findIndex(item => item._id === orderItemToRemove._id);
 
             if (existingItemIndex === -1) {
                 return prevOrder;
@@ -113,17 +86,9 @@ const CreateOrder = () => {
         });
     };
 
-    const fetchData = async (url: string) => {
-        const response = await fetch(url);
-        const json = await response.json();
-
-        return json;
-    };
-
-
     const getItems = async (): Promise<IItem[]> => {
         try {
-            const result = await fetchData(API_BASE_URL + 'item/getitems?isMenuItem=true');
+            const result = await fetchData(API_BASE_URL + 'item/getitems?isMenuItem=true', token, logout);
             return result;
         } catch (error) {
             console.error("Error fetching items:", error);

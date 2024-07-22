@@ -4,29 +4,10 @@ import PageTitle from "../../PageTitle";
 import OrderItemList from "./OrderItemList";
 import { MdFormatListBulletedAdd } from "react-icons/md";
 import { Dispatch, SetStateAction } from "react";
-import { API_BASE_URL } from "../../../config/config";
-
-interface ISellOrderItem {
-    id: string;
-    name: string;
-    menuCategory: string;
-    quantity: number;
-    isMultiOptions: boolean;
-    selectedOption?: string;
-    price: number;
-}
-
-interface ISellOrder {
-    items: ISellOrderItem[];
-    comment?: string;
-    status: string;
-    type: "delivery" | "dine-in";
-    tableNumber?: number;
-    address?: string;
-    city?: string;
-    region?: string;
-    country?: string;
-}
+import { API_BASE_URL } from "../../../global/config";
+import { ISellOrder, ISellOrderItem } from "../../../global/types";
+import { useAuth } from "../../../context/AuthProvider";
+import { postData } from "../../../global/functions";
 
 interface OrderListProps {
     children?: React.ReactNode;
@@ -39,6 +20,7 @@ interface OrderListProps {
 }
 
 const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, setComment, setSellOrder }: OrderListProps) => {
+    const { token, logout } = useAuth();
     const total = sellOrder.items.reduce((acc, item) => {
         if (item.price !== undefined) {
             return acc + (item.price * item.quantity);
@@ -48,29 +30,21 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
 
     const createSellOrder = async (): Promise<ISellOrder> => {
         try {
-            const result = await postData(API_BASE_URL + 'sellorder/createsellorder', sellOrder);
+            const result = await postData(API_BASE_URL + 'sellorder/createsellorder', sellOrder, token, logout);
             return result;
         } catch (error) {
             console.error("Error creating sellOrder:", error);
             return {
+                _id: "",
+                createdAt: "",
+                total: 0,
                 items: [],
                 comment: "",
                 status: "pending",
                 type: "dine-in",
-            };
+                tableNumber: 0,
+            }
         }
-    };
-
-    const postData = async (url: string, data: ISellOrder) => {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
-        const json = await response.json();
-        return json;
     };
 
     return (

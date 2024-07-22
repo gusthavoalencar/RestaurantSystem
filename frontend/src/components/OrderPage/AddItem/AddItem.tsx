@@ -5,6 +5,7 @@ import { FaChevronLeft } from "react-icons/fa6";
 import ItemContainer from "../ItemContainer/ItemContainer";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { v4 as uuidv4 } from 'uuid';
+import { IItem, ISellOrder, ISellOrderItem } from "../../../global/types";
 
 
 interface AddItemProps {
@@ -16,44 +17,7 @@ interface AddItemProps {
     items: IItem[];
 }
 
-interface ISellOrderItem {
-    id: string;
-    name: string;
-    menuCategory: string;
-    quantity: number;
-    isMultiOptions: boolean;
-    selectedOption?: string;
-    price: number;
-}
-
-interface IItem {
-    _id: string;
-    name: string;
-    amount?: number;
-    menuCategory: string;
-    isMultiOptions: boolean;
-    options: string[];
-    isMenuItem: boolean;
-    menuSections: string[];
-    price?: number;
-    active: boolean;
-}
-
-interface ISellOrder {
-    items: ISellOrderItem[];
-    comment?: string;
-    status: string;
-    type: "delivery" | "dine-in";
-    tableNumber?: number;
-    address?: string;
-    city?: string;
-    region?: string;
-    country?: string;
-}
-
 const AddItem = ({ onBackButtonClick, addItemToOrder, removeItemFromOrder, sellOrder, items }: AddItemProps) => {
-
-
     return (
         <>
             <div className="row p-0 m-0 pt-5">
@@ -81,7 +45,7 @@ const AddItem = ({ onBackButtonClick, addItemToOrder, removeItemFromOrder, sellO
                     </div>
                     <div className="shadow rounded-bottom addItemItemListBody">
                         {sellOrder.items.map((orderItem) => (
-                            <div className="ps-3 py-2 border-bottom" key={orderItem.id}>
+                            <div className="ps-3 py-2 border-bottom" key={orderItem._id}>
                                 <span>{orderItem.name}</span>
                                 <span className="quantityValue text-secondary">{`${orderItem.quantity > 1 ? '   x' + orderItem.quantity : ''}`}</span>
                                 <span className="float-end pe-2 pointer text-danger"><RiDeleteBin5Line onClick={() => removeItemFromOrder(orderItem)} /></span>

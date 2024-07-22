@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import "./index.css";
 import { ChangeEvent, useState } from 'react';
 import Select, { SingleValue } from 'react-select';
-import { API_BASE_URL } from '../../config/config';
+import { API_BASE_URL } from '../../global/config';
 
 interface UserModalProps {
     show: boolean;

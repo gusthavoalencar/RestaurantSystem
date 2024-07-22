@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = (token: string) => {
         const formattedToken = token;
         setToken(formattedToken);
+        window.location.href = '/orders';
     };
 
     const logout = () => {

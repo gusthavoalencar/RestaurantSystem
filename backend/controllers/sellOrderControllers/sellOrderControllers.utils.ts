@@ -3,7 +3,7 @@ import Item from "../../models/item";
 
 const fetchItemsInSellOrder = async (items: ISellOrderItems[]): Promise<ISellOrderItems[]> => {
   try {
-    const itemIds = items.map((item) => item.id);
+    const itemIds = items.map((item) => item._id);
     const foundItems = await Item.find({ _id: { $in: itemIds } });
     const foundItemIds = foundItems.map((item) => item._id.toString());
     const missingItemIds = itemIds.filter((itemId) => !foundItemIds.includes(itemId.toString()));

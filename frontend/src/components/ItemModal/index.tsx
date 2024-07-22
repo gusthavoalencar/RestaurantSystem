@@ -3,35 +3,21 @@ import Button from 'react-bootstrap/Button';
 import "./index.css";
 import { ChangeEvent, useEffect, useState } from 'react';
 import Select, { MultiValue, SingleValue } from 'react-select';
-import { API_BASE_URL } from '../../config/config';
+import { API_BASE_URL } from '../../global/config';
+import { fetchData, postData } from '../../global/functions';
+import { IItem, IItemMenuSection } from '../../global/types';
 import { useAuth } from '../../context/AuthProvider';
 
 interface CreateItemModalProps {
     show: boolean;
     onHide: () => void;
+    selectedItem?: IItem | null;
 }
 
-interface IItemMenuSection {
-    name: string;
-    active: boolean;
-}
-
-interface IItem {
-    name: string;
-    amount: number;
-    isMenuItem: boolean;
-    isMultiOptions: boolean;
-    options: string[];
-    menuSections: string[];
-    menuCategory: string;
-    price: number;
-    active: boolean;
-}
-
-const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
+const ItemModal = ({ show, onHide, selectedItem }: CreateItemModalProps) => {
     const { token, logout } = useAuth();
-    const [menuSections, setMenuSections] = useState<IItemMenuSection[]>([]);
-    const [item, setItem] = useState<IItem>({
+    const defaultItemState = {
+        _id: '',
         name: '',
         amount: 0,
         isMenuItem: false,
@@ -41,8 +27,16 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
         menuCategory: '',
         price: 0,
         active: true,
-    });
+    };
 
+    useEffect(() => {
+        if (selectedItem != null) {
+            setItem(selectedItem);
+        }
+    }, [selectedItem]);
+
+    const [menuSections, setMenuSections] = useState<IItemMenuSection[]>([]);
+    const [item, setItem] = useState<IItem>(selectedItem || defaultItemState);
     const [optionValue, setOptionValue] = useState('');
 
     const menuCategories = [
@@ -54,7 +48,7 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
 
     const getCategories = async (): Promise<IItemMenuSection[]> => {
         try {
-            const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections', token);
+            const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections', token, logout);
             return categories;
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -62,64 +56,47 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
         }
     };
 
-    const fetchData = async (url: string, authToken: string | null) => {
-        const response = await fetch(url, {
-            headers: {
-                'authorization': `${authToken}`,
-                'content-type': 'application/json'
-            }
-        });
-
-        if (response.status === 401 || response.status === 403) {
-            logout();
-            return;
-        }
-        const json = await response.json();
-        return json;
-    };
-
     const createItem = async (): Promise<IItem> => {
         try {
-            const createdItem = await postData(API_BASE_URL + 'item/createItem', item);
+            const createdItem = await postData(API_BASE_URL + 'item/createItem', item, token, logout);
             return createdItem;
+            selectedItem = null;
+            setItem(defaultItemState);
         } catch (error) {
             console.error("Error creating item:", error);
-            return {
-                name: '',
-                amount: 0,
-                isMenuItem: false,
-                menuSections: [],
-                isMultiOptions: false,
-                options: [],
-                menuCategory: '',
-                price: 0,
-                active: false,
-            };
+            return defaultItemState;
         }
     };
 
-    const postData = async (url: string, data: IItem) => {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
-        const json = await response.json();
-        return json;
+    const editItem = async (): Promise<IItem> => {
+        try {
+            const editedItem = await postData(API_BASE_URL + 'item/editItem', item, token, logout);
+            return editedItem;
+            selectedItem = null;
+            setItem(defaultItemState);
+        } catch (error) {
+            console.error("Error editing item:", error);
+            return defaultItemState;
+        }
     };
 
     useEffect(() => {
         const fetchItems = async () => {
             const categories = await getCategories();
             setMenuSections(categories);
+            if (selectedItem != null) {
+                setItem({
+                    ...selectedItem,
+                    menuSections: selectedItem.menuSections.map(section => categories.find(c => c.name === section)?.name || section),
+                    menuCategory: categories.find(c => c.name === selectedItem?.menuCategory)?.name || selectedItem.menuCategory
+                });
+            }
         };
 
         fetchItems();
-    }, []);
+    }, [selectedItem]);
 
-    function handleMenuSectionSelectChange(newValue: MultiValue<{ value: string; label: string; }>): void {
+    function handleMenuSectionSelectChange(newValue: MultiValue<{ value: string; label: string }>): void {
         setItem(prevItem => ({
             ...prevItem,
             menuSections: newValue.map(option => option.value),
@@ -175,8 +152,10 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
         <>
             <Modal show={show} onHide={onHide} dialogClassName="custom-modal-dialog" contentClassName="custom-modal-content">
                 <Modal.Header className="border-0 d-flex justify-content-center align-items-center">
-                    <Modal.Title className='m-0'>Create Item</Modal.Title>
-                    <Button variant="button" onClick={onHide} className="position-absolute end-0 fs-2 text-secondary">
+                    <Modal.Title className='m-0'>
+                        {selectedItem == null ? 'Create Item' : 'Edit Item'}
+                    </Modal.Title>
+                    <Button variant="button" onClick={() => { onHide(); setItem(defaultItemState); }} className="position-absolute end-0 fs-2 text-secondary">
                         <span aria-hidden="true">&times;</span>
                     </Button>
                 </Modal.Header>
@@ -213,18 +192,22 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
                                     <Select
                                         name="categories"
                                         options={menuCategories}
+                                        value={menuCategories.find(category => category.value === item.menuCategory)}
                                         className="basic-select mb-3"
                                         classNamePrefix="select"
                                         onChange={handleMenuCategoryChange}
                                     />
-
                                     <label className="mb-1" htmlFor="menuSections">
                                         Menu Sections:
                                     </label>
                                     <Select
                                         isMulti
                                         name="menuSections"
-                                        options={menuSections.map(section => ({ value: section.name, label: section.name }))}
+                                        value={menuSections.filter(section => item.menuSections.includes(section.name)).map(section => ({ value: section.name, label: section.name }))}
+                                        options={menuSections.map(section => ({
+                                            value: section.name,
+                                            label: section.name
+                                        }))}
                                         className="basic-multi-select mb-3"
                                         classNamePrefix="select"
                                         onChange={handleMenuSectionSelectChange}
@@ -283,7 +266,12 @@ const ItemModal = ({ show, onHide }: CreateItemModalProps) => {
                         </div>
                     </div>
                     <div className='row mt-5'>
-                        <Button className='col-5 mx-auto mainGreenBgColor border-0' onClick={createItem}>Create</Button>
+                        {selectedItem == null && (
+                            <Button className='col-5 mx-auto mainGreenBgColor border-0' onClick={createItem}>Create Item</Button>
+                        )}
+                        {selectedItem != null && (
+                            <Button className='col-5 mx-auto mainGreenBgColor border-0' onClick={editItem}>Edit Item</Button>
+                        )}
                     </div>
                 </Modal.Body>
             </Modal>

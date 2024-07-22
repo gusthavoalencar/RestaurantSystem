@@ -3,59 +3,44 @@ import ItemsTable from "../../components/ItemsTable";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { TfiPlus } from "react-icons/tfi";
-import { API_BASE_URL } from "../../config/config";
+import { API_BASE_URL } from "../../global/config";
 import CreateItemModal from "../../components/CreateItemModal";
 import ItemModal from "../../components/ItemModal";
+import { IItem } from "../../global/types";
+import { fetchData } from "../../global/functions";
 import { useAuth } from "../../context/AuthProvider";
-
-interface IItem {
-    _id: string;
-    name: string;
-    amount?: number;
-    isMenuItem: boolean;
-    isMultiOptions: boolean;
-    options: string[];
-    menuSections: string[];
-    menuCategory: string;
-    price?: number;
-    active: boolean;
-}
 
 const Inventory = () => {
     const { token, logout } = useAuth();
     const headers = ['ID No.', 'Name', 'Type', 'Stock Amount'];
 
     const [showCreateModal, setShowCreateModal] = useState(false);
-    const handleCreateModalClose = () => setShowCreateModal(false);
+    const handleCreateModalClose = () => {
+        setShowCreateModal(false);
+        setSelectedItem(null);
+    };
     const handleCreateModalShow = () => setShowCreateModal(true);
 
     const [showCreateItemModal, setShowCreateItemModal] = useState(false);
-    const handleCreateItemModalClose = () => setShowCreateItemModal(false);
+    const handleCreateItemModalClose = () => {
+        setShowCreateItemModal(false);
+        setSelectedItem(null);
+    };
     const handleCreateItemModalShow = () => setShowCreateItemModal(true);
 
-    const fetchData = async (url: string, authToken: string | null) => {
-        const response = await fetch(url, {
-            headers: {
-                'authorization': `${authToken}`,
-                'content-type': 'application/json'
-            }
-        });
+    const [selectedItem, setSelectedItem] = useState<IItem | null>(null);
 
-        if (response.status === 401 || response.status === 403) {
-            logout();
-            return;
-        }
-        const json = await response.json();
-
-        return json;
+    const handleManageItemClick = (item: IItem) => {
+        setSelectedItem(item);
+        handleCreateItemModalShow();
     };
 
     const [items, setItems] = useState<IItem[]>([]);
 
     const getItems = async (): Promise<IItem[]> => {
         try {
-            const items = await fetchData(API_BASE_URL + 'item/getitems', token);
-
+            const items = await fetchData(API_BASE_URL + 'item/getitems', token, logout);
+            setItems(items);
             return items;
         } catch (error) {
             console.error("Error fetching items:", error);
@@ -89,7 +74,9 @@ const Inventory = () => {
             </div>
             <ItemsTable
                 headers={headers}
-                items={items} />
+                items={items}
+                handleManageItemClick={handleManageItemClick}
+                type="item" />
             <CreateItemModal
                 show={showCreateModal}
                 onHide={handleCreateModalClose}
@@ -98,6 +85,7 @@ const Inventory = () => {
             <ItemModal
                 show={showCreateItemModal}
                 onHide={handleCreateItemModalClose}
+                selectedItem={selectedItem}
             />
         </>
     );
