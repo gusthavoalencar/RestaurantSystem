@@ -27,6 +27,10 @@ const sellOrderControllers = {
         country?: string;
       } = req.body;
 
+      if (items.length < 1) {
+        return res.status(400).json({ error: "Items array must contain at least one item" });
+      }
+
       const orderItems = await fetchItemsInSellOrder(items);
 
       const sellOrder = new SellOrder({

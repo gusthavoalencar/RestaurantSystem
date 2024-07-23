@@ -40,7 +40,7 @@ const OrderItemList = ({ title, sellOrder, removeItemFromOrder }: OrderItemListP
                 {items.map(item => (
                     <div className="ps-3 py-2 border-bottom" key={item._id}>
                         <span>{item.name}</span>
-                        <span className="quantityValue text-secondary">{`${item.quantity > 1 ? '   x' + item.quantity : ''}`}</span>
+                        <span className="quantityValue text-secondary">{` - $${item.price} ${item.quantity > 1 ? '   (x' + item.quantity + ')' : ''}`}</span>
                         <span className="float-end pe-2 pointer text-danger"><RiDeleteBin5Line onClick={() => removeItemFromOrder(item)} /></span>
                     </div>
                 ))}

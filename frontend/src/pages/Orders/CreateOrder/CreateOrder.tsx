@@ -88,7 +88,7 @@ const CreateOrder = () => {
 
     const getItems = async (): Promise<IItem[]> => {
         try {
-            const result = await fetchData(API_BASE_URL + 'item/getitems?isMenuItem=true', token, logout);
+            const result = await fetchData(API_BASE_URL + 'item/getitems?isMenuItem=true', token, () => logout('error'));
             return result;
         } catch (error) {
             console.error("Error fetching items:", error);

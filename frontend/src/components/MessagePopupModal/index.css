@@ -1,0 +1,10 @@
+.messagepopup-modal-dialog {
+  position: absolute;
+  top: 2%;
+  left: 40%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 400px;
+  margin: 0;
+  z-index: 1050;
+}

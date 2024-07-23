@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import "./index.css";
 import NavButton from "./NavButton";
 import CompanyLogo from "./CompanyLogo";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthProvider";
 
 const SideNav = () => {
     const [selectedNavButton, setSelectedNavButton] = useState("");
-    const location = useLocation();
+    const { logout } = useAuth();
+
 
     useEffect(() => {
         setSelectedNavButton(getSelectedNavButtonFromPath(location.pathname));
@@ -14,8 +16,8 @@ const SideNav = () => {
 
     const handleNavButtonClick = (text: string) => {
         if (text === "Logout") {
-            localStorage.removeItem("authToken");
-            window.location.href = "/login";
+            logout('success');
+            return;
         }
         else {
             setSelectedNavButton(text);

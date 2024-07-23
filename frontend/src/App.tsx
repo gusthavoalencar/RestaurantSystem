@@ -12,22 +12,25 @@ import Inventory from "./pages/Inventory/Inventory";
 import Management from "./pages/Management";
 import Orders from "./pages/Orders";
 import CreateOrder from "./pages/Orders/CreateOrder/CreateOrder";
+import { ModalProvider } from "./context/PopupModal";
 
 function App() {
   const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="*" element={<AuthenticatedApp />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgotpassword" element={<Forgotpassword />} />
-            <Route path="/resetpassword" element={<Resetpassword />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <ModalProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="*" element={<AuthenticatedApp />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/forgotpassword" element={<Forgotpassword />} />
+              <Route path="/resetpassword" element={<Resetpassword />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </ModalProvider>
     </QueryClientProvider>
   );
 }
