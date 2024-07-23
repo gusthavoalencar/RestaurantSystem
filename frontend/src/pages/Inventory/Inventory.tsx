@@ -39,7 +39,7 @@ const Inventory = () => {
 
     const getItems = async (): Promise<IItem[]> => {
         try {
-            const items = await fetchData(API_BASE_URL + 'item/getitems', token, logout);
+            const items = await fetchData(API_BASE_URL + 'item/getitems', token, () => logout('error'));
             setItems(items);
             return items;
         } catch (error) {

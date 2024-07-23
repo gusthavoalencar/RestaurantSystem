@@ -49,7 +49,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
 
     const getCategories = async (): Promise<IItemMenuSection[]> => {
         try {
-            const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections', token, logout);
+            const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections', token, () => logout('error'));
             return categories;
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -59,7 +59,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
 
     const createItem = async (): Promise<IItem> => {
         try {
-            const createdItem = await postData(API_BASE_URL + 'item/createItem', item, token, logout);
+            const createdItem = await postData(API_BASE_URL + 'item/createItem', item, token, () => logout('error'));
             return createdItem;
         } catch (error) {
             console.error("Error creating item:", error);
@@ -75,7 +75,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
 
     const editItem = async (): Promise<IItem> => {
         try {
-            const editedItem = await postData(API_BASE_URL + 'item/editItem', item, token, logout);
+            const editedItem = await postData(API_BASE_URL + 'item/editItem', item, token, () => logout('error'));
             return editedItem;
 
         } catch (error) {
@@ -92,7 +92,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
 
     const deleteItem = async (): Promise<IItem> => {
         try {
-            const deletedItem = await postData(API_BASE_URL + 'item/deleteItem', item, token, logout);
+            const deletedItem = await postData(API_BASE_URL + 'item/deleteItem', item, token, () => logout('error'));
             return deletedItem;
         } catch (error) {
             console.error("Error editing item:", error);

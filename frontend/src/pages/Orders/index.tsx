@@ -21,7 +21,7 @@ const Orders = () => {
 
     const getOrders = async (): Promise<ISellOrder[]> => {
         try {
-            const items = await fetchData(API_BASE_URL + 'sellorder/getsellorders', token, logout);
+            const items = await fetchData(API_BASE_URL + 'sellorder/getsellorders', token, () => logout('error'));
 
             return items;
         } catch (error) {

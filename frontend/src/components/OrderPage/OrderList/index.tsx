@@ -1,3 +1,4 @@
+// OrderList.js
 import { Button } from "react-bootstrap";
 import { TfiPlus } from "react-icons/tfi";
 import PageTitle from "../../PageTitle";
@@ -8,6 +9,8 @@ import { API_BASE_URL } from "../../../global/config";
 import { ISellOrder, ISellOrderItem } from "../../../global/types";
 import { useAuth } from "../../../context/AuthProvider";
 import { postData } from "../../../global/functions";
+import { useModal } from '../../../context/PopupModal';
+import { useNavigate } from "react-router-dom";
 
 interface OrderListProps {
     children?: React.ReactNode;
@@ -21,6 +24,9 @@ interface OrderListProps {
 
 const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, setComment, setSellOrder }: OrderListProps) => {
     const { token, logout } = useAuth();
+    const { showModal } = useModal();
+    const navigate = useNavigate();
+
     const total = sellOrder.items.reduce((acc, item) => {
         if (item.price !== undefined) {
             return acc + (item.price * item.quantity);
@@ -29,11 +35,49 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
     }, 0);
 
     const createSellOrder = async (): Promise<ISellOrder> => {
+        if (sellOrder.items.length === 0) {
+            showModal("Please add items to create order", "error");
+            return {
+                _id: "",
+                createdAt: "",
+                total: 0,
+                items: [],
+                comment: "",
+                status: "pending",
+                type: "dine-in",
+                tableNumber: 0,
+            };
+        }
+
+        if (sellOrder.type === "dine-in" && sellOrder.tableNumber === 0) {
+            showModal("Please enter table number", "error");
+            return {
+                _id: "",
+                createdAt: "",
+                total: 0,
+                items: [],
+                comment: "",
+                status: "pending",
+                type: "dine-in",
+                tableNumber: 0,
+            };
+        }
+
+
         try {
-            const result = await postData(API_BASE_URL + 'sellorder/createsellorder', sellOrder, token, logout);
+            const result = await postData(API_BASE_URL + 'sellorder/createsellorder', sellOrder, token, () => logout('error'));
+            if (result.error) {
+                showModal(result.error, "error");
+            }
+            else {
+                showModal("Order created successfully", "success");
+                navigate("/orders");
+            }
+
             return result;
         } catch (error) {
             console.error("Error creating sellOrder:", error);
+            showModal("Error creating order", "error");
             return {
                 _id: "",
                 createdAt: "",
@@ -96,6 +140,28 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
                         ></textarea>
                     </div>
                 </div>
+                {sellOrder.type === "dine-in" && (
+                    <div className="col-3 d-flex align-items-center text-center">
+                        <label htmlFor="tableNumber" className="mb-0">
+                            Table Number *:
+                        </label>
+                        <div className="form-group flex-grow-1 mb-0 ms-2">
+                            <input
+                                type="number"
+                                className="form-control shadow"
+                                id="tableNumber"
+                                placeholder="Table Number"
+                                value={sellOrder.tableNumber}
+                                onChange={(e) =>
+                                    setSellOrder({
+                                        ...sellOrder,
+                                        tableNumber: parseInt(e.target.value),
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
+                )}
                 <div className="col float-end mt-5 p-0">
                     <Button className="mainGreenBgColor float-end py-2 pe-3 text-white rounded-4 fw-light text-center pointer text-decoration-none border-0 me-5"><p className="fs-5 m-0"
                         onClick={() => {

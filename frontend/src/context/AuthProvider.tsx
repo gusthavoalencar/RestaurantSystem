@@ -1,9 +1,10 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { useModal } from './PopupModal';
 
 interface AuthContextType {
     token: string | null;
     login: (token: string) => void;
-    logout: () => void;
+    logout: (type: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -12,6 +13,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [token, setToken] = useState<string | null>(() => {
         return localStorage.getItem('authToken');
     });
+    const { showModal } = useModal();
+
 
     useEffect(() => {
         if (token) {
@@ -27,8 +30,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         window.location.href = '/orders';
     };
 
-    const logout = () => {
+    const logout = (type: string) => {
         setToken(null);
+        if (type === "error") {
+            showModal("Authentication has expired/invalid", "error");
+        }
+        else {
+            showModal("Logged out successfully", "success");
+        }
         window.location.href = '/login';
     };
 
