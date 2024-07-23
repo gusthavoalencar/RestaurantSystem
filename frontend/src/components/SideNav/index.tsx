@@ -13,7 +13,13 @@ const SideNav = () => {
     }, [location.pathname]);
 
     const handleNavButtonClick = (text: string) => {
-        setSelectedNavButton(text);
+        if (text === "Logout") {
+            localStorage.removeItem("authToken");
+            window.location.href = "/login";
+        }
+        else {
+            setSelectedNavButton(text);
+        }
     };
 
     const getSelectedNavButtonFromPath = (pathname: string) => {
@@ -55,7 +61,7 @@ const SideNav = () => {
         <>
             <div className="row m-0 p-0 col-10 container vh-100">
                 <div className="m-0 p-0 vh-100">
-                    <div className="mb-5 mt-4">
+                    <div className="mb-5 mt-5">
                         <CompanyLogo />
                     </div>
 
