@@ -15,7 +15,7 @@ const Main = () => {
                     <Route path="/inventory" element={<Inventory />} />
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/management" element={<Management />} />
-                    <Route path="/orders/createorder" element={<CreateOrder />} />
+                    <Route path="/orders/sellorder" element={<CreateOrder />} />
                 </Routes>
             </div>
         </>

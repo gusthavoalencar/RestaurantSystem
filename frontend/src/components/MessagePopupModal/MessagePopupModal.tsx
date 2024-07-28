@@ -11,7 +11,7 @@ interface MessagePopupModalProps {
 
 const MessagePopupModal = ({ show, onHide, message, type }: MessagePopupModalProps) => {
     const [progress, setProgress] = useState(0);
-    const duration = 3000;
+    const duration = 2000;
     const closeDelay = 300;
 
     useEffect(() => {
@@ -42,8 +42,17 @@ const MessagePopupModal = ({ show, onHide, message, type }: MessagePopupModalPro
 
     const progressBarClass = type === 'error' ? 'progress-bar bg-danger' : 'progress-bar bg-success';
     const modalBorderClass = type === 'error' ? 'border-danger' : 'border-success';
+
     return (
-        <Modal show={show} onHide={onHide} dialogClassName={`shadow rounded messagepopup-modal-dialog ${modalBorderClass}`} contentClassName={` rounded messagepopup-modal-content ${modalBorderClass}`} backdrop={false}>
+        <Modal
+            show={show}
+            onHide={onHide}
+            dialogClassName={`shadow rounded messagepopup-modal-dialog ${modalBorderClass}`}
+            contentClassName={`rounded messagepopup-modal-content ${modalBorderClass}`}
+            backdrop={false}
+            keyboard={false}
+            className="messagepopup-modal"
+        >
             <Modal.Header className="border-0 d-flex justify-content-center align-items-center p-0 pt-2">
                 {type === 'error' ? <Modal.Title className='m-0'>Error</Modal.Title> : <Modal.Title className='m-0'>Success</Modal.Title>}
             </Modal.Header>

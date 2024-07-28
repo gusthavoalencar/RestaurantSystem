@@ -3,14 +3,15 @@ import { Button } from "react-bootstrap";
 import { TfiPlus } from "react-icons/tfi";
 import PageTitle from "../../PageTitle";
 import OrderItemList from "./OrderItemList";
-import { MdFormatListBulletedAdd } from "react-icons/md";
-import { Dispatch, SetStateAction } from "react";
+import { MdDelete, MdFormatListBulletedAdd } from "react-icons/md";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { API_BASE_URL } from "../../../global/config";
 import { ISellOrder, ISellOrderItem } from "../../../global/types";
 import { useAuth } from "../../../context/AuthProvider";
 import { postData } from "../../../global/functions";
 import { useModal } from '../../../context/PopupModal';
 import { useNavigate } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
 
 interface OrderListProps {
     children?: React.ReactNode;
@@ -20,9 +21,10 @@ interface OrderListProps {
     setSellOrder: Dispatch<SetStateAction<ISellOrder>>;
     setComment: Dispatch<SetStateAction<string>>;
     comment: string;
+    editId?: string;
 }
 
-const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, setComment, setSellOrder }: OrderListProps) => {
+const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, setComment, setSellOrder, editId }: OrderListProps) => {
     const { token, logout } = useAuth();
     const { showModal } = useModal();
     const navigate = useNavigate();
@@ -34,35 +36,25 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
         return acc;
     }, 0);
 
-    const createSellOrder = async (): Promise<ISellOrder> => {
+    useEffect(() => {
+        setTotal();
+    }, [sellOrder.items]);
+
+    const setTotal = () => {
+        setSellOrder({
+            ...sellOrder,
+            total: total
+        });
+    }
+
+    const createSellOrder = async () => {
         if (sellOrder.items.length === 0) {
             showModal("Please add items to create order", "error");
-            return {
-                _id: "",
-                createdAt: "",
-                total: 0,
-                items: [],
-                comment: "",
-                status: "pending",
-                type: "dine-in",
-                tableNumber: 0,
-            };
         }
 
         if (sellOrder.type === "dine-in" && sellOrder.tableNumber === 0) {
             showModal("Please enter table number", "error");
-            return {
-                _id: "",
-                createdAt: "",
-                total: 0,
-                items: [],
-                comment: "",
-                status: "pending",
-                type: "dine-in",
-                tableNumber: 0,
-            };
         }
-
 
         try {
             const result = await postData(API_BASE_URL + 'sellorder/createsellorder', sellOrder, token, () => logout('error'));
@@ -78,16 +70,50 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
         } catch (error) {
             console.error("Error creating sellOrder:", error);
             showModal("Error creating order", "error");
-            return {
-                _id: "",
-                createdAt: "",
-                total: 0,
-                items: [],
-                comment: "",
-                status: "pending",
-                type: "dine-in",
-                tableNumber: 0,
+        }
+    };
+
+    const editSellOrder = async () => {
+        if (sellOrder.items.length === 0) {
+            showModal("Please add items to edit order", "error");
+        }
+
+        if (sellOrder.type === "dine-in" && sellOrder.tableNumber === 0) {
+            showModal("Please enter table number", "error");
+        }
+
+        try {
+            const result = await postData(API_BASE_URL + 'sellorder/editsellorder', sellOrder, token, () => logout('error'));
+            if (result.error) {
+                showModal(result.error, "error");
             }
+            else {
+                showModal("Order edited successfully", "success");
+                navigate("/orders");
+            }
+
+            return result;
+        } catch (error) {
+            console.error("Error editing sellOrder:", error);
+            showModal("Error editing order", "error");
+        }
+    };
+
+    const deleteSellOrder = async () => {
+        try {
+            const result = await postData(API_BASE_URL + 'sellorder/deletesellorder', sellOrder, token, () => logout('error'));
+            if (result.error) {
+                showModal(result.error, "error");
+            }
+            else {
+                showModal("Order deleted successfully", "success");
+                navigate("/orders");
+            }
+
+            return result;
+        } catch (error) {
+            console.error("Error deleting sellOrder:", error);
+            showModal("Error deleting order", "error");
         }
     };
 
@@ -127,13 +153,13 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
             </div>
 
             <div className="row m-0 p-0">
-                <div className="col-4 mt-4">
+                <div className="col-2 mt-4">
                     <div className="form-group">
                         <textarea
                             className="form-control shadow"
                             id="comment"
                             placeholder="Comment"
-                            rows={3}
+                            rows={2}
                             style={{ resize: "none" }}
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
@@ -162,19 +188,153 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
                         </div>
                     </div>
                 )}
-                <div className="col float-end mt-5 p-0">
-                    <Button className="mainGreenBgColor float-end py-2 pe-3 text-white rounded-4 fw-light text-center pointer text-decoration-none border-0 me-5"><p className="fs-5 m-0"
-                        onClick={() => {
-                            setSellOrder({
-                                ...sellOrder,
-                                comment: comment
-                            });
+                {sellOrder.type === "delivery" && (
+                    <>
+                        <div className="col-1 d-flex align-items-center text-center">
+                            <div className="form-group mb-2">
+                                <label htmlFor="address1" className="mb-0 float-start">
+                                    Address *:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control shadow"
+                                    id="address"
+                                    placeholder="Address"
+                                    value={sellOrder.address}
+                                    onChange={(e) =>
+                                        setSellOrder({
+                                            ...sellOrder,
+                                            address: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        </div>
+                        <div className="col-1 d-flex align-items-center text-center">
+                            <div className="form-group mb-2">
+                                <label htmlFor="city" className="mb-0 float-start">
+                                    City *:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control shadow"
+                                    id="city"
+                                    placeholder="City"
+                                    value={sellOrder.city}
+                                    onChange={(e) =>
+                                        setSellOrder({
+                                            ...sellOrder,
+                                            city: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        </div>
+                        <div className="col-1 d-flex align-items-center text-center">
+                            <div className="form-group mb-2">
+                                <label htmlFor="region" className="mb-0 float-start">
+                                    County *:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control shadow"
+                                    id="region"
+                                    placeholder="County"
+                                    value={sellOrder.region}
+                                    onChange={(e) =>
+                                        setSellOrder({
+                                            ...sellOrder,
+                                            region: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        </div>
+                        <div className="col-1 d-flex align-items-center text-center">
+                            <div className="form-group mb-0">
+                                <label htmlFor="country" className="mb-0 float-start">
+                                    Country *:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control shadow"
+                                    id="country"
+                                    placeholder="Country"
+                                    value={sellOrder.country || "ireland"}
+                                    disabled
+                                    onChange={(e) =>
+                                        setSellOrder({
+                                            ...sellOrder,
+                                            country: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </>
 
-                            createSellOrder();
-                        }}>
-                        <TfiPlus className="fs-4 me-2" />
-                        Create Order
-                    </p></Button>
+                )}
+                <div className="col float-end mt-5 p-0">
+                    {editId !== '' && editId !== undefined ? (
+                        <>
+                            <Button className="mainGreenBgColor float-end py-2 pe-3 text-white rounded-4 fw-light text-center pointer text-decoration-none border-0 me-5">
+                                <p className="fs-5 m-0"
+                                    onClick={() => {
+                                        setSellOrder({
+                                            ...sellOrder,
+                                            status: "complete",
+                                            comment: comment
+                                        });
+                                        editSellOrder();
+                                    }}>
+                                    <TfiPlus className="fs-4 me-2" />
+                                    Complete
+                                </p>
+                            </Button>
+                            <Button className="bg-warning float-end py-2 pe-3 text-white rounded-4 fw-light text-center pointer text-decoration-none border-0 me-3">
+                                <p className="fs-5 m-0"
+                                    onClick={() => {
+                                        setSellOrder({
+                                            ...sellOrder,
+                                            comment: comment
+                                        });
+                                        editSellOrder();
+                                    }}>
+                                    <FaEdit className="fs-4 me-2" />
+                                    Edit
+                                </p>
+                            </Button>
+                            <Button className="bg-danger float-end py-2 pe-3 text-white rounded-4 fw-light text-center pointer text-decoration-none border-0 me-3">
+                                <p className="fs-5 m-0"
+                                    onClick={() => {
+                                        setSellOrder({
+                                            ...sellOrder,
+                                            status: "cancelled",
+                                            comment: comment
+                                        });
+                                        deleteSellOrder();
+                                    }}>
+                                    <MdDelete className="fs-4 me-2" />
+                                    Delete
+                                </p>
+                            </Button>
+                        </>
+
+                    ) : (
+                        <Button className="mainGreenBgColor float-end py-2 pe-3 text-white rounded-4 fw-light text-center pointer text-decoration-none border-0 me-5">
+                            <p className="fs-5 m-0"
+                                onClick={() => {
+                                    setSellOrder({
+                                        ...sellOrder,
+                                        comment: comment
+                                    });
+                                    createSellOrder();
+                                }}>
+                                <TfiPlus className="fs-4 me-2" />
+                                Create Order
+                            </p>
+                        </Button>
+                    )}
                     <span className="float-end me-3 fs-4">Total:  ${total > 0 ? total.toFixed(2) : 0}</span>
                 </div>
             </div>

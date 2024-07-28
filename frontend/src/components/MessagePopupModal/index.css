@@ -7,4 +7,13 @@
   max-width: 400px;
   margin: 0;
   z-index: 1050;
+  pointer-events: none;
+}
+
+.messagepopup-modal .modal-dialog {
+  pointer-events: auto;
+}
+
+.messagepopup-modal .modal-backdrop {
+  display: none;
 }

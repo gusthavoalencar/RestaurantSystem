@@ -14,7 +14,8 @@ const sellOrderControllers = {
         address,
         city,
         region,
-        country
+        country,
+        total
       }: {
         items: ISellOrderItems[];
         comment?: string;
@@ -25,6 +26,7 @@ const sellOrderControllers = {
         city?: string;
         region?: string;
         country?: string;
+        total: number;
       } = req.body;
 
       if (items.length < 1) {
@@ -43,7 +45,7 @@ const sellOrderControllers = {
         city,
         region,
         country,
-        total: orderItems.reduce((acc, item) => acc + item.price, 0)
+        total
       });
       await sellOrder.save();
 
@@ -61,6 +63,72 @@ const sellOrderControllers = {
       const sellOrders = await SellOrder.find(query);
 
       return res.status(200).json(sellOrders);
+    } catch (error) {
+      return res.status(500).json({ error: (error as Error).message });
+    }
+  },
+
+  getSellOrderById: async (req: Request, res: Response) => {
+    try {
+      const { id } = req.query;
+
+      if (!id) {
+        return res.status(400).json({ error: "Missing 'id' parameter" });
+      }
+
+      const sellOrder = await SellOrder.findById(id);
+
+      if (!sellOrder) {
+        return res.status(404).json({ error: "Sell order not found" });
+      }
+
+      return res.status(200).json(sellOrder);
+    } catch (error) {
+      return res.status(500).json({ error: (error as Error).message });
+    }
+  },
+
+  editSellOrder: async (req: Request, res: Response) => {
+    try {
+      const sellOrderId = req.body._id;
+      const updateData = req.body;
+
+      if (!sellOrderId) {
+        return res.status(400).json({ error: "sellOrder ID must be provided" });
+      }
+
+      const existingSellOrder = await SellOrder.findById(sellOrderId);
+
+      if (!existingSellOrder) {
+        return res.status(400).json({ error: "Sell Order not found" });
+      }
+
+      const updatedSellOrder = await SellOrder.findByIdAndUpdate(sellOrderId, updateData, { new: true });
+      if (!updatedSellOrder) {
+        return res.status(500).json({ error: "Failed to update sell order" });
+      }
+
+      return res.status(200).json(updatedSellOrder);
+    } catch (error) {
+      return res.status(500).json({ error: (error as Error).message });
+    }
+  },
+
+  deleteSellOrder: async (req: Request, res: Response) => {
+    try {
+      const id = req.body._id;
+
+      if (!id) {
+        return res.status(400).json({ error: "Missing 'id' parameter" });
+      }
+
+      const sellOrder = await SellOrder.findByIdAndDelete(id);
+
+      if (!sellOrder) {
+        return res.status(404).json({ error: "Sell order not found" });
+      }
+
+      return res.status(200).json({ message: "Sell order deleted successfully" });
     } catch (error) {
       return res.status(500).json({ error: (error as Error).message });
     }

@@ -1,6 +1,7 @@
 import React from "react";
 import { IItem, ISellOrder } from "../../../global/types";
 import { formatDistanceToNow } from 'date-fns';
+import { useNavigate } from "react-router-dom";
 
 interface ItemsRowsProps {
     items?: IItem[];
@@ -47,6 +48,7 @@ const ItemRow = ({ tabSelected, item, handleManageItemClick }: { item: IItem; ha
 
 const OrderRow = ({ order, handleManageOrderClick }: { order: ISellOrder; handleManageOrderClick?: (order: ISellOrder) => void }) => {
     const timeAgo = formatDistanceToNow(new Date(order.createdAt), { addSuffix: true });
+    const navigate = useNavigate();
 
     return (
         <div className="row rounded p-0 m-0 me-5 ms-2 mt-1 pt-1 pb-1 align-items-center tableRow align-middle">
@@ -61,12 +63,18 @@ const OrderRow = ({ order, handleManageOrderClick }: { order: ISellOrder; handle
             </div>
             <div className="col d-flex justify-content-end">
                 <div className="pe-2">
-                    <div className="border border-1 rounded border-dark p-1 shadow pointer" onClick={() => handleManageOrderClick?.(order)}>
+                    <div
+                        className="border border-1 rounded border-dark p-1 shadow pointer"
+                        onClick={() => {
+                            handleManageOrderClick?.(order);
+                            navigate(`/orders/sellorder?ordertype=${order.type}&id=${order._id}`);
+                        }}
+                    >
                         Manage
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

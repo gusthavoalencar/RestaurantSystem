@@ -5,6 +5,7 @@ import { API_BASE_URL } from "../../../global/config";
 import { fetchData } from "../../../global/functions";
 import { ISellOrder, IItem, ISellOrderItem } from "../../../global/types";
 import { useAuth } from "../../../context/AuthProvider";
+import { useSearchParams } from "react-router-dom";
 
 
 const CreateOrder = () => {
@@ -22,6 +23,27 @@ const CreateOrder = () => {
     });
     const [comment, setComment] = useState('');
     const [items, setItems] = useState<IItem[]>([]);
+
+    const [searchParams] = useSearchParams();
+    const ordertype = searchParams.get('ordertype');
+    const editId = searchParams.get('id') ?? undefined;
+
+    useEffect(() => {
+        if (ordertype === "delivery" || ordertype === "dine-in") {
+            if (ordertype === "delivery") {
+                setSellOrder(prevOrder => ({
+                    ...prevOrder,
+                    country: "Ireland",
+                    region: "Dublin",
+                    type: ordertype
+                }));
+            }
+            setSellOrder(prevOrder => ({
+                ...prevOrder,
+                type: ordertype
+            }));
+        }
+    }, [ordertype]);
 
     const handleAddItemButtonClick = () => {
         setcreateOrderStep("addItem");
@@ -96,11 +118,27 @@ const CreateOrder = () => {
         }
     };
 
+    const getOrderById = async (): Promise<IItem[]> => {
+        try {
+            const result = await fetchData(API_BASE_URL + `sellorder/getSellOrderById?id=${editId}`, token, () => logout('error'));
+
+            setSellOrder(result);
+            return result;
+        } catch (error) {
+            console.error("Error fetching order:", error);
+            return [];
+        }
+    };
+
     useEffect(() => {
         const fetchItems = async () => {
             const items = await getItems();
             setItems(items);
         };
+
+        if (editId) {
+            getOrderById();
+        }
 
         fetchItems();
     }, []);
@@ -115,7 +153,8 @@ const CreateOrder = () => {
                     removeItemFromOrder={removeItemFromOrder}
                     setSellOrder={setSellOrder}
                     setComment={setComment}
-                    comment={comment}>
+                    comment={comment}
+                    editId={editId}>
                 </OrderList>
             break;
         case 'addItem':
@@ -136,7 +175,8 @@ const CreateOrder = () => {
                     removeItemFromOrder={removeItemFromOrder}
                     setSellOrder={setSellOrder}
                     setComment={setComment}
-                    comment={comment}>
+                    comment={comment}
+                    editId={editId}>
                 </OrderList>
             break;
     }

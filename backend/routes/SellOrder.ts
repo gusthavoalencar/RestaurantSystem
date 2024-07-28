@@ -5,9 +5,9 @@ import { authenticateToken } from "../controllers/userControllers/userController
 const router = express.Router();
 
 router.get("/getSellOrders", authenticateToken, sellOrderControllers.getSellOrders);
-
+router.get("/getSellOrderById", authenticateToken, sellOrderControllers.getSellOrderById);
 router.post("/createSellOrder", authenticateToken, sellOrderControllers.createSellOrder);
-
-//router.delete("/deleteSellOrder", itemCategoryControllers.deleteItemCategory);
+router.post("/editSellOrder", authenticateToken, sellOrderControllers.editSellOrder);
+router.post("/deleteSellOrder", sellOrderControllers.deleteSellOrder);
 
 export default router;
