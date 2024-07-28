@@ -4,7 +4,7 @@ import { IUser } from "../../models/user";
 import { Request, Response, NextFunction } from "express";
 
 async function sendPasswordResetEmail(email: string) {
-  const token = jwt.sign({ email }, process.env.JWT_SECRET as string, { expiresIn: "1d" });
+  const token = jwt.sign({ email }, process.env.JWT_SECRET as string, { expiresIn: 86400 });
   const resetLink = `${process.env.FRONTEND_URL}/resetpassword/?token=${token}&email=${email}`;
 
   const transporter = nodemailer.createTransport({

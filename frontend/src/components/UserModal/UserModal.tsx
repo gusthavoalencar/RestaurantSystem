@@ -4,6 +4,9 @@ import "./index.css";
 import { ChangeEvent, useState } from 'react';
 import Select, { SingleValue } from 'react-select';
 import { API_BASE_URL } from '../../global/config';
+import { postData } from '../../global/functions';
+import { useModal } from '../../context/PopupModal';
+import { useAuth } from '../../context/AuthProvider';
 
 interface UserModalProps {
     show: boolean;
@@ -26,21 +29,11 @@ const UserModal = ({ show, onHide }: UserModalProps) => {
         status: 'Pending',
         role: 'Waiter'
     });
+    const { token, logout } = useAuth();
+    const { showModal } = useModal();
 
     const statusOptions = [{ value: 'active', label: 'Active' }, { value: 'inactive', label: 'Inactive' }, { value: 'pending', label: 'Pending' }];
     const roleOptions = [{ value: 'waiter', label: 'Waiter' }, { value: 'manager', label: 'Manager' }, { value: 'admin', label: 'Admin' }];
-
-    const postData = async (url: string, data: IUser) => {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
-        const json = await response.json();
-        return json;
-    };
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -68,17 +61,18 @@ const UserModal = ({ show, onHide }: UserModalProps) => {
 
     const createUser = async () => {
         try {
-            const createdUser = await postData(API_BASE_URL + 'user/register', user);
-            return createdUser;
+            const result = await postData(API_BASE_URL + 'user/register', user, token, () => logout('error'));
+            if (result.error) {
+                showModal(result.error, "error");
+            }
+            else {
+                showModal("User created successfully", "success");
+            }
+
+            return result;
         } catch (error) {
             console.error("Error creating user:", error);
-            return {
-                name: '',
-                surname: '',
-                email: '',
-                status: '',
-                role: ''
-            };
+            showModal("Error creating user", "error");
         }
     };
 

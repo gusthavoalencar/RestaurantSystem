@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import { API_BASE_URL } from '../../global/config';
 import CompanyLogo from '../../components/SideNav/CompanyLogo';
+import { useModal } from '../../context/PopupModal';
 
 
 const Forgotpassword = () => {
     const [email, setEmail] = useState('');
+    const { showModal } = useModal();
 
     const handleForgotPassword = async () => {
         try {
             const result = await postData(API_BASE_URL + 'user/forgotpassword', email);
+            if (result.error) {
+                showModal(result.error, "error");
+            }
+            else {
+                showModal("Reset password email sent successfully", "success");
+            }
             return result;
 
         } catch (error) {
             console.error("Error attempting to send reset password email:", error);
+            showModal("Error attempting to send reset password email", "error");
         }
     };
 

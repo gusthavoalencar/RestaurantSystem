@@ -72,7 +72,7 @@ const itemControllers = {
 
       const existingItem = await Item.findById(itemId);
       if (!existingItem) {
-        return res.status(404).json({ error: "Item not found" });
+        return res.status(400).json({ error: "Item not found" });
       }
 
       if (updateData.menuSections) {

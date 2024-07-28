@@ -7,6 +7,7 @@ import { API_BASE_URL } from '../../global/config';
 import { fetchData, postData } from '../../global/functions';
 import { IItem, IItemMenuSection } from '../../global/types';
 import { useAuth } from '../../context/AuthProvider';
+import { useModal } from '../../context/PopupModal';
 
 interface CreateItemModalProps {
     show: boolean;
@@ -17,6 +18,7 @@ interface CreateItemModalProps {
 
 const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProps) => {
     const { token, logout } = useAuth();
+    const { showModal } = useModal();
     const defaultItemState = {
         _id: '',
         name: '',
@@ -59,10 +61,18 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
 
     const createItem = async (): Promise<IItem> => {
         try {
-            const createdItem = await postData(API_BASE_URL + 'item/createItem', item, token, () => logout('error'));
-            return createdItem;
+            const result = await postData(API_BASE_URL + 'item/createItem', item, token, () => logout('error'));
+            if (result.error) {
+                showModal(result.error, "error");
+            }
+            else {
+                showModal("Item created successfully", "success");
+            }
+
+            return result;
         } catch (error) {
             console.error("Error creating item:", error);
+            showModal("Error creating item: " + error, "error");
             return defaultItemState;
         }
         finally {
@@ -75,11 +85,19 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
 
     const editItem = async (): Promise<IItem> => {
         try {
-            const editedItem = await postData(API_BASE_URL + 'item/editItem', item, token, () => logout('error'));
-            return editedItem;
+            const result = await postData(API_BASE_URL + 'item/editItem', item, token, () => logout('error'));
+            if (result.error) {
+                showModal(result.error, "error");
+            }
+            else {
+                showModal("Item edited successfully", "success");
+            }
+
+            return result;
 
         } catch (error) {
             console.error("Error editing item:", error);
+            showModal("Error editing item: " + error, "success");
             return defaultItemState;
         }
         finally {
@@ -92,10 +110,18 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
 
     const deleteItem = async (): Promise<IItem> => {
         try {
-            const deletedItem = await postData(API_BASE_URL + 'item/deleteItem', item, token, () => logout('error'));
-            return deletedItem;
+            const result = await postData(API_BASE_URL + 'item/deleteItem', item, token, () => logout('error'));
+            if (result.error) {
+                showModal(result.error, "error");
+            }
+            else {
+                showModal("Item deleted successfully", "success");
+            }
+
+            return result;
         } catch (error) {
             console.error("Error editing item:", error);
+            showModal("Error editing item: " + error, "success");
             return defaultItemState;
         }
         finally {
