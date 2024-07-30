@@ -6,9 +6,9 @@ import ItemRouter from "./routes/item";
 import ItemMenuSectionRouter from "./routes/itemMenuSection";
 import SellOrderRouter from "./routes/SellOrder";
 import UserRouter from "./routes/user";
-import mongoose from "mongoose";
 import session from "express-session";
-import passport from "passport";
+import mongoose from "mongoose";
+import passport from "./passportConfig";
 
 //Load variables from environment
 dotenv.config();
@@ -17,28 +17,21 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-  next();
-});
+
+//Handle Cors
+const allowedOrigins = [`http://localhost:${process.env.PORT}`, `http://localhost:${process.env.FRONTEND_PORT}`];
+app.use(cors({ origin: allowedOrigins }));
+
 app.use(
   session({
-    secret: `${process.env.SESSION_SECRET}`,
+    secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      maxAge: 60 * 60 * 1000
-    }
+    cookie: { maxAge: 60 * 60 * 1000 }
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
-
-//Handle Cors
-const allowedOrigins = [`http://localhost:${process.env.PORT}`, `http://localhost:${process.env.FRONTEND_PORT}`];
-const options: cors.CorsOptions = {
-  origin: allowedOrigins
-};
-app.use(cors(options));
 
 //Routers
 app.use("/api/item", ItemRouter);

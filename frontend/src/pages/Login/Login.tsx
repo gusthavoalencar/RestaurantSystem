@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthProvider';
 import { API_BASE_URL } from '../../global/config';
 import CompanyLogo from '../../components/SideNav/CompanyLogo';
+import { useModal } from '../../context/PopupModal';
 
 interface ILoginCredentials {
     email: string;
@@ -11,11 +12,17 @@ interface ILoginCredentials {
 const Login = () => {
     const [loginCredentials, setLoginCredentials] = useState<ILoginCredentials>({ email: '', password: '' });
     const { login } = useAuth();
+    const { showModal } = useModal();
 
     const handleLogin = async () => {
         try {
             const result = await postData(API_BASE_URL + 'user/login', loginCredentials);
-            login(result.token);
+            if (result.error) {
+                showModal(result.error, 'error');
+            }
+            else {
+                login(result.token);
+            }
         } catch (error) {
             console.error("Error attempting to login:", error);
             return {

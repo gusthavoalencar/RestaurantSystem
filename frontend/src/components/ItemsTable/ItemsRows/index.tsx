@@ -1,13 +1,15 @@
 import React from "react";
-import { IItem, ISellOrder } from "../../../global/types";
+import { IItem, ISellOrder, IUser } from "../../../global/types";
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from "react-router-dom";
 
 interface ItemsRowsProps {
     items?: IItem[];
     orders?: ISellOrder[];
+    users?: IUser[];
     handleManageItemClick?: ((item: IItem) => void) | undefined;
     handleManageOrderClick?: ((order: ISellOrder) => void) | undefined;
+    handleManageUserClick?: ((item: IUser) => void) | undefined;
     type: string;
     tabSelected: string;
 }
@@ -78,7 +80,36 @@ const OrderRow = ({ order, handleManageOrderClick }: { order: ISellOrder; handle
     );
 };
 
-const ItemsRows = ({ tabSelected, items = [], orders = [], handleManageItemClick, handleManageOrderClick, type }: ItemsRowsProps) => {
+const UserRow = ({ user, handleManageUserClick }: { user: IUser; handleManageUserClick?: (user: IUser) => void }) => {
+
+    return (
+        <div className="row rounded p-0 m-0 me-5 ms-2 mt-1 pt-1 pb-1 align-items-center tableRow align-middle">
+            <div className="col-9">
+                <div className="row">
+                    <div className="col text-center">{user._id}</div>
+                    <div className="col text-center">{user.name} {user.surname}</div>
+                    <div className="col text-center">{user.email}</div>
+                    <div className="col text-center">{user.role}</div>
+                    <div className="col text-center">{user.status}</div>
+                </div>
+            </div>
+            <div className="col d-flex justify-content-end">
+                <div className="pe-2">
+                    <div
+                        className="border border-1 rounded border-dark p-1 shadow pointer"
+                        onClick={() => {
+                            handleManageUserClick?.(user);
+                        }}
+                    >
+                        Manage
+                    </div>
+                </div>
+            </div>
+        </div >
+    )
+};
+
+const ItemsRows = ({ tabSelected, items = [], orders = [], users = [], handleManageItemClick, handleManageOrderClick, handleManageUserClick, type }: ItemsRowsProps) => {
 
     return (
         <div className="ms-2 me-2">
@@ -86,6 +117,7 @@ const ItemsRows = ({ tabSelected, items = [], orders = [], handleManageItemClick
                 <div className="tableScrollbar overflow-auto">
                     {type === "item" && items.map(item => <ItemRow key={item._id} item={item} handleManageItemClick={handleManageItemClick} tabSelected={tabSelected} />)}
                     {type === "order" && orders.map(order => <OrderRow key={order._id} order={order} handleManageOrderClick={handleManageOrderClick} />)}
+                    {type === "users" && users.map(user => <UserRow key={user._id} user={user} handleManageUserClick={handleManageUserClick} />)}
                 </div>
             </div>
         </div>

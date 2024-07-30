@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../context/AuthProvider';
 import { API_BASE_URL } from '../../global/config';
 import CompanyLogo from '../../components/SideNav/CompanyLogo';
+import { useNavigate } from 'react-router-dom';
+import { useModal } from '../../context/PopupModal';
 
 interface IResetPasswordCredentials {
     email: string;
@@ -13,12 +14,23 @@ interface IResetPasswordCredentials {
 const Resetpassword = () => {
     const [resetPasswordCredentials, setResetPasswordCredentials] = useState<IResetPasswordCredentials>({ email: '', password: '', confirmpassword: '', token: '' });
     const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
+    const navigate = useNavigate();
+    const { showModal } = useModal();
 
     const handleResetPassword = async () => {
         try {
-            await postData(API_BASE_URL + 'user/resetpassword', resetPasswordCredentials);
+            const result = await postData(API_BASE_URL + 'user/resetpassword', resetPasswordCredentials);
+            if (result.error) {
+                showModal(result.error, "error");
+            }
+            else {
+                showModal("Password changed successfully", "success");
+                navigate('/login');
+            }
         } catch (error) {
-            console.error("Error attempting to reset password:", error);
+            console.error("Error attempting to change password:", error);
+            showModal("Error attempting to change password", "error");
+
         }
     };
 
