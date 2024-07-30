@@ -4,7 +4,7 @@ import PageTitle from "../../components/PageTitle";
 import CreateOrderModal from "../../components/CreateOrderModal";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../global/config";
-import ItemsTable from "../../components/ItemsTable";
+import ItemsTable from "../../components/ItemsTable/ItemsTable";
 import { ISellOrder } from "../../global/types";
 import { fetchData } from "../../global/functions";
 import { useAuth } from "../../context/AuthProvider";

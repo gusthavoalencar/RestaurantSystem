@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { API_BASE_URL } from '../../global/config';
 import CompanyLogo from '../../components/SideNav/CompanyLogo';
 import { useModal } from '../../context/PopupModal';
+import { useNavigate } from 'react-router-dom';
 
 
 const Forgotpassword = () => {
     const [email, setEmail] = useState('');
     const { showModal } = useModal();
+    const navigate = useNavigate();
+
 
     const handleForgotPassword = async () => {
         try {
@@ -15,7 +18,8 @@ const Forgotpassword = () => {
                 showModal(result.error, "error");
             }
             else {
-                showModal("Reset password email sent successfully", "success");
+                showModal("Reset password email sent successfully, an email will be sent shortly", "success");
+                navigate('/login');
             }
             return result;
 

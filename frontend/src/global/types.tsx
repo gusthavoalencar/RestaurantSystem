@@ -40,3 +40,12 @@ export interface IItemMenuSection {
     name: string;
     active: boolean;
 }
+
+export interface IUser {
+    _id: string;
+    name: string;
+    surname: string;
+    email: string;
+    status: string;
+    role: string;
+}

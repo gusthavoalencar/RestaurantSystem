@@ -3,29 +3,44 @@ import ItemsRows from "./ItemsRows";
 import ItemsTableHeaders from "./ItemsTableHeaders";
 import TableTabs from "./TableTabs";
 import "./index.css";
-import { IItem, ISellOrder } from "../../global/types";
+import { IItem, ISellOrder, IUser } from "../../global/types";
 
 interface ItemsTableProps {
     headers: string[];
     items?: IItem[];
     orders?: ISellOrder[];
+    users?: IUser[];
     handleManageItemClick?: (item: IItem) => void;
     handleManageOrderClick?: (item: ISellOrder) => void;
+    handleManageUserClick?: (item: IUser) => void;
     type: string;
 }
 
-const ItemsTable = ({ headers, items = [], handleManageOrderClick, handleManageItemClick, orders = [], type }: ItemsTableProps) => {
+const ItemsTable = ({ headers, items = [], handleManageOrderClick, handleManageItemClick, orders = [], type, users = [], handleManageUserClick }: ItemsTableProps) => {
     const menuHeaders = ['ID No.', 'Name', 'Category', 'Types', 'Price', 'Stock Amount'];
     const stockHeaders = ['ID No.', 'Name', 'Stock Amount'];
     const [menuItems, setMenuItems] = useState<IItem[]>([]);
     const [stockItems, setStockItems] = useState<IItem[]>([]);
     const [activeOrders, setActiveOrders] = useState<ISellOrder[]>([]);
     const [completeOrders, setCompleteOrders] = useState<ISellOrder[]>([]);
-    const [tabSelected, setTabSelected] = useState(type == "item" ? "Menu" : "Active");
+    const [tabSelected, setTabSelected] = useState('');
 
     const handleTableTypeSelected = (type: string) => {
         setTabSelected(type);
     };
+
+    useEffect(() => {
+        loadTabSelected();
+    }, []);
+    const loadTabSelected = () => {
+        if (type == "item") {
+            setTabSelected("Menu");
+        } else if (type == "order") {
+            setTabSelected("Active");
+        } else if (type == "users") {
+            setTabSelected("Users");
+        }
+    }
 
 
     const filterItems = useCallback(() => {
@@ -56,6 +71,8 @@ const ItemsTable = ({ headers, items = [], handleManageOrderClick, handleManageI
                 return <ItemsRows orders={activeOrders} handleManageOrderClick={handleManageOrderClick} type="order" tabSelected={tabSelected} />;
             case "Completed":
                 return <ItemsRows orders={completeOrders} handleManageOrderClick={handleManageOrderClick} type="order" tabSelected={tabSelected} />;
+            case "Users":
+                return <ItemsRows users={users} handleManageUserClick={handleManageUserClick} type="users" tabSelected={tabSelected} />;
             default:
                 return null;
         }
@@ -99,6 +116,16 @@ const ItemsTable = ({ headers, items = [], handleManageOrderClick, handleManageI
                         <div className="col-1 d-flex ps-2" onClick={() => handleTableTypeSelected("Completed")}>
                             <div className={tabSelected === "Completed" ? "pointer greenTableTabBorder border-2 me-2" : "pointer me-2"}>
                                 <TableTabs title="Completed" />
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {type == "users" && (
+                    <>
+                        <div onClick={() => handleTableTypeSelected("Users")} className="col-1 d-flex ps-2">
+                            <div className={tabSelected === "Users" ? "pointer greenTableTabBorder border-2 me-2" : "pointer me-2"}>
+                                <TableTabs title="Users" />
                             </div>
                         </div>
                     </>

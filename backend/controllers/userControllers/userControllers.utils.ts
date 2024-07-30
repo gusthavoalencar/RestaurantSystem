@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { IUser } from "../../models/user";
 import { Request, Response, NextFunction } from "express";
+import User from "../../models/user";
+import { VerifyFunction } from "passport-local";
 
 async function sendPasswordResetEmail(email: string) {
   const token = jwt.sign({ email }, process.env.JWT_SECRET as string, { expiresIn: 86400 });
@@ -57,4 +59,22 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-export { sendPasswordResetEmail, authenticateToken };
+const authenticateUser: VerifyFunction = async (email, password, done) => {
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return done(null, false, { message: "No user with that email" });
+    }
+
+    const isMatch = await user.authenticate(password);
+    if (isMatch) {
+      return done(null, user);
+    } else {
+      return done(null, false, { message: "Password incorrect" });
+    }
+  } catch (err) {
+    return done(err);
+  }
+};
+
+export { sendPasswordResetEmail, authenticateToken, authenticateUser };

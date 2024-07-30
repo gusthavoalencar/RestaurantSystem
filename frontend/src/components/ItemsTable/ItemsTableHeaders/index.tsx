@@ -32,7 +32,19 @@ const ItemsTableHeaders = ({ tableHeaders, tabSelected }: TableHeadersProps) => 
                 </div>
             )}
 
-            {tabSelected !== "Stock" && tabSelected !== "Menu" && (
+            {tabSelected === "Users" && (
+                <div className="col-9">
+                    <div className="row">
+                        {tableHeaders.map((header, index) => (
+                            <div key={index} className="col text-center">
+                                {header}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {tabSelected !== "Stock" && tabSelected !== "Menu" && tabSelected !== "Users" && (
                 <div className="col-7">
                     <div className="row">
                         {tableHeaders.map((header, index) => (

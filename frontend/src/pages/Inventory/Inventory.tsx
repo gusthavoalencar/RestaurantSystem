@@ -1,5 +1,5 @@
 import PageTitle from "../../components/PageTitle";
-import ItemsTable from "../../components/ItemsTable";
+import ItemsTable from "../../components/ItemsTable/ItemsTable";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { TfiPlus } from "react-icons/tfi";
@@ -50,8 +50,7 @@ const Inventory = () => {
 
     useEffect(() => {
         const fetchItems = async () => {
-            const items = await getItems();
-            setItems(items);
+            await getItems();
         };
 
         fetchItems();
