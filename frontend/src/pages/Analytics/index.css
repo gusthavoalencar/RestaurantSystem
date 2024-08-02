@@ -1,17 +1,31 @@
 .statistics3Box {
-  height: 30px;
-  width: 55px;
-  border: 1px solid #000000;
+  height: 130px;
+  width: 100%;
+  background-color: #edf7ed;
 }
 
 .statistics2Box {
   border: 1px solid #000000;
-  height: 30px;
-  width: 55px;
+  height: 350px;
+  width: 100%;
+}
+
+.statisticsBox {
+  height: 216px;
+  width: 100%;
+  border: 1px solid #000000;
 }
 
 .statistics1Box {
-  height: 30px;
-  width: 55px;
+  height: 90px;
+  width: 80%;
   border: 1px solid #000000;
+}
+
+.salesTypeBgColor {
+  background-color: #efefee;
+}
+
+.totalSalesBgColor {
+  background-color: #edf5f8;
 }
