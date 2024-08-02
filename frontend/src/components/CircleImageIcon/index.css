@@ -1,0 +1,13 @@
+.CicleImageIcon {
+  height: 50px;
+  width: 50px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.iconSize {
+  height: 65%;
+  width: 65%;
+}
