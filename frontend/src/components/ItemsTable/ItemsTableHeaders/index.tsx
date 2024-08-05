@@ -56,9 +56,11 @@ const ItemsTableHeaders = ({ tableHeaders, tabSelected }: TableHeadersProps) => 
                 </div>
             )}
 
-            <div className="col">
-                <div className="float-end pe-4">Action</div>
-            </div>
+            {tabSelected !== "Completed" && (
+                <div className="col">
+                    <div className="float-end pe-4">Action</div>
+                </div>
+            )}
         </div>
     );
 };

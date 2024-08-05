@@ -50,7 +50,7 @@ const ItemRow = ({ tabSelected, item, handleManageItemClick }: { item: IItem; ha
 );
 
 // Order row
-const OrderRow = ({ order, handleManageOrderClick }: { order: ISellOrder; handleManageOrderClick?: (order: ISellOrder) => void }) => {
+const OrderRow = ({ order, handleManageOrderClick, tabSelected }: { order: ISellOrder; handleManageOrderClick?: (order: ISellOrder) => void, tabSelected: string }) => {
     const timeAgo = formatDistanceToNow(new Date(order.createdAt), { addSuffix: true });
     const navigate = useNavigate();
 
@@ -67,15 +67,17 @@ const OrderRow = ({ order, handleManageOrderClick }: { order: ISellOrder; handle
             </div>
             <div className="col d-flex justify-content-end">
                 <div className="pe-2">
-                    <div
-                        className="border border-1 rounded border-dark p-1 shadow pointer"
-                        onClick={() => {
-                            handleManageOrderClick?.(order);
-                            navigate(`/orders/sellorder?ordertype=${order.type}&id=${order._id}`);
-                        }}
-                    >
-                        Manage
-                    </div>
+                    {tabSelected !== "Completed" && (
+                        <div
+                            className="border border-1 rounded border-dark p-1 shadow pointer"
+                            onClick={() => {
+                                handleManageOrderClick?.(order);
+                                navigate(`/orders/sellorder?ordertype=${order.type}&id=${order._id}`);
+                            }}
+                        >
+                            Manage
+                        </div>
+                    )}
                 </div>
             </div>
         </div >
@@ -119,7 +121,7 @@ const ItemsRows = ({ tabSelected, items = [], orders = [], users = [], handleMan
             <div className="tableScrollbar overflow-auto">
                 <div className="tableScrollbar overflow-auto">
                     {type === "item" && items.map(item => <ItemRow key={item._id} item={item} handleManageItemClick={handleManageItemClick} tabSelected={tabSelected} />)}
-                    {type === "order" && orders.map(order => <OrderRow key={order._id} order={order} handleManageOrderClick={handleManageOrderClick} />)}
+                    {type === "order" && orders.map(order => <OrderRow key={order._id} order={order} handleManageOrderClick={handleManageOrderClick} tabSelected={tabSelected} />)}
                     {type === "users" && users.map(user => <UserRow key={user._id} user={user} handleManageUserClick={handleManageUserClick} />)}
                 </div>
             </div>
