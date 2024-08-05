@@ -32,6 +32,8 @@ const ItemsTable = ({ headers, items = [], handleManageOrderClick, handleManageI
     useEffect(() => {
         loadTabSelected();
     }, []);
+
+    // Load the tab selected based on the type
     const loadTabSelected = () => {
         if (type == "item") {
             setTabSelected("Menu");
@@ -42,7 +44,7 @@ const ItemsTable = ({ headers, items = [], handleManageOrderClick, handleManageI
         }
     }
 
-
+    // Filter items based on the type
     const filterItems = useCallback(() => {
         const tempMenuItems = items.filter(item => item.isMenuItem);
         setMenuItems(tempMenuItems);

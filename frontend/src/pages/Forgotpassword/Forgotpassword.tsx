@@ -10,9 +10,10 @@ const Forgotpassword = () => {
     const { showModal } = useModal();
     const navigate = useNavigate();
 
-
+    // Handle forgot password
     const handleForgotPassword = async () => {
         try {
+            // API request to send reset password email
             const result = await postData(API_BASE_URL + 'user/forgotpassword', email);
             if (result.error) {
                 showModal(result.error, "error");
@@ -29,6 +30,7 @@ const Forgotpassword = () => {
         }
     };
 
+    // Post request without token
     const postData = async (url: string, data: string) => {
         const response = await fetch(url, {
             method: 'POST',

@@ -13,6 +13,7 @@ const OrderItemList = ({ title, sellOrder, removeItemFromOrder }: OrderItemListP
 
     let items: ISellOrderItem[] = [];
 
+    // Filter items based on the title
     switch (title) {
         case 'Starters':
             items = sellOrder.items.filter(item => item.menuCategory === 'Starters');

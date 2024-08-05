@@ -28,6 +28,7 @@ const CreateOrder = () => {
     const ordertype = searchParams.get('ordertype');
     const editId = searchParams.get('id') ?? undefined;
 
+    // Set order type
     useEffect(() => {
         if (ordertype === "delivery" || ordertype === "dine-in") {
             if (ordertype === "delivery") {
@@ -52,7 +53,10 @@ const CreateOrder = () => {
         setcreateOrderStep("orderList");
     };
 
+    // Add item to order
     const addItemToOrder = (item: IItem) => {
+
+        // Sets order and check if item already exists in order
         setSellOrder(prevOrder => {
             const existingItemIndex = prevOrder.items.findIndex(orderItem => orderItem._id === item._id);
 
@@ -82,6 +86,7 @@ const CreateOrder = () => {
         });
     };
 
+    // Remove item from order
     const removeItemFromOrder = (orderItemToRemove: ISellOrderItem) => {
         setSellOrder(prevOrder => {
             const existingItemIndex = prevOrder.items.findIndex(item => item._id === orderItemToRemove._id);
@@ -108,8 +113,11 @@ const CreateOrder = () => {
         });
     };
 
+    // Get Items
     const getItems = async (): Promise<IItem[]> => {
         try {
+
+            // API request to get items
             const result = await fetchData(API_BASE_URL + 'item/getitems?isMenuItem=true', token, () => logout('error'));
             return result;
         } catch (error) {
@@ -118,8 +126,10 @@ const CreateOrder = () => {
         }
     };
 
+    // Get order by id
     const getOrderById = async (): Promise<IItem[]> => {
         try {
+            // API request to get order by id
             const result = await fetchData(API_BASE_URL + `sellorder/getSellOrderById?id=${editId}`, token, () => logout('error'));
 
             setSellOrder(result);
@@ -144,6 +154,7 @@ const CreateOrder = () => {
     }, []);
 
     let createOrderContent;
+    // Switch between orderList and addItem
     switch (createOrderStep) {
         case 'orderList':
             createOrderContent =

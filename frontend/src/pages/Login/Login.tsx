@@ -14,8 +14,10 @@ const Login = () => {
     const { login } = useAuth();
     const { showModal } = useModal();
 
+    // Handle login
     const handleLogin = async () => {
         try {
+            // API request to login
             const result = await postData(API_BASE_URL + 'user/login', loginCredentials);
             if (result.error) {
                 showModal(result.error, 'error');
@@ -32,6 +34,7 @@ const Login = () => {
         }
     };
 
+    // Post request without token
     const postData = async (url: string, data: ILoginCredentials) => {
         const response = await fetch(url, {
             method: 'POST',

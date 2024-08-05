@@ -15,6 +15,7 @@ const Analytics = () => {
     const [orders, setOrders] = useState<ISellOrder[]>([]);
     const [items, setItems] = useState<IItem[]>([]);
 
+    // Calculate total sales
     const ordersTotal = () => {
         let total = 0;
         orders.forEach(order => {
@@ -23,8 +24,10 @@ const Analytics = () => {
         return total;
     }
 
+    // Get all orders
     const getOrders = async (): Promise<ISellOrder[]> => {
         try {
+            // API request to get all orders
             const items = await fetchData(API_BASE_URL + 'sellorder/getsellorders', token, () => logout('error'));
 
             return items;
@@ -49,9 +52,10 @@ const Analytics = () => {
         fetchItems();
     }, []);
 
-
+    // Get all items
     const getItems = async (): Promise<IItem[]> => {
         try {
+            // API request to get all items
             const items = await fetchData(API_BASE_URL + 'item/getitems', token, () => logout('error'));
             setItems(items);
             return items;

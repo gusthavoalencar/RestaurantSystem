@@ -3,6 +3,7 @@ import { ISellOrderItems, SellOrder } from "../../models/sellOrder";
 import { fetchItemsInSellOrder } from "./sellOrderControllers.utils";
 
 const sellOrderControllers = {
+  // Create a sell order
   createSellOrder: async (req: Request, res: Response) => {
     try {
       const {
@@ -33,6 +34,7 @@ const sellOrderControllers = {
         return res.status(400).json({ error: "Items array must contain at least one item" });
       }
 
+      // Fetch items in sell order
       const orderItems = await fetchItemsInSellOrder(items);
 
       const sellOrder = new SellOrder({
@@ -55,6 +57,7 @@ const sellOrderControllers = {
     }
   },
 
+  // Get sell orders
   getSellOrders: async (req: Request, res: Response) => {
     try {
       const { status } = req.query;
@@ -68,6 +71,7 @@ const sellOrderControllers = {
     }
   },
 
+  // Get sell order by ID
   getSellOrderById: async (req: Request, res: Response) => {
     try {
       const { id } = req.query;
@@ -88,6 +92,7 @@ const sellOrderControllers = {
     }
   },
 
+  // Edit sell order
   editSellOrder: async (req: Request, res: Response) => {
     try {
       const sellOrderId = req.body._id;
@@ -114,6 +119,7 @@ const sellOrderControllers = {
     }
   },
 
+  // Delete sell order
   deleteSellOrder: async (req: Request, res: Response) => {
     try {
       const id = req.body._id;

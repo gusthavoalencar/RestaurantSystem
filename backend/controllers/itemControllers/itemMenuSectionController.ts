@@ -14,11 +14,6 @@ const itemMenuSectionControllers = {
   },
 
   //Create itemMenuSection
-  // Example of a request object to create:
-  // {
-  //     "name": "Favorites",
-  //      "active": true,
-  // }
   createItemMenuSection: async (req: Request, res: Response) => {
     try {
       const itemMenuSection = req.body;

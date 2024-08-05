@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
+// Define the item schema
 export interface IItem extends mongoose.Document {
   name: string;
   amount: number;
@@ -14,6 +15,7 @@ export interface IItem extends mongoose.Document {
   active: boolean;
 }
 
+// Create the item schema
 const itemSchema = new Schema(
   {
     name: { type: String, required: [true, "Name cannot be empty"] },

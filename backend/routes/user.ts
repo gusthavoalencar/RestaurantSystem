@@ -2,8 +2,10 @@ import express from "express";
 import userControllers from "../controllers/userControllers/userControllers";
 import { authenticateToken } from "../controllers/userControllers/userControllers.utils";
 
+//Create a router
 const router = express.Router();
 
+//Routes
 router.post("/forgotpassword", userControllers.forgotpassword);
 router.post("/register", userControllers.register);
 router.post("/login", userControllers.login);

@@ -6,6 +6,7 @@ import passport from "../../passportConfig";
 import { IVerifyOptions } from "passport-local";
 
 const userControllers = {
+  // Login user
   login: (req: Request, res: Response) => {
     passport.authenticate("local", (err: Error | null, user: IUser | false, info: IVerifyOptions) => {
       if (err) return res.status(500).json({ error: err.message });
@@ -22,6 +23,7 @@ const userControllers = {
     })(req, res);
   },
 
+  // Register user
   register: async (req: Request, res: Response) => {
     const { name, surname, email, status, role } = req.body;
 
@@ -38,6 +40,7 @@ const userControllers = {
     }
   },
 
+  // Forgot password
   forgotpassword: async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
@@ -52,6 +55,7 @@ const userControllers = {
     }
   },
 
+  // Reset password
   resetPassword: async (req: Request, res: Response) => {
     const { token, password } = req.body;
 
@@ -75,6 +79,7 @@ const userControllers = {
     }
   },
 
+  // Get user
   getUser: async (req: Request, res: Response) => {
     try {
       const user = await User.findById(req.params.id);
@@ -89,6 +94,7 @@ const userControllers = {
     }
   },
 
+  // Get users
   getUsers: async (req: Request, res: Response) => {
     try {
       const users = await User.find();
@@ -99,6 +105,7 @@ const userControllers = {
     }
   },
 
+  // Delete user
   deleteUser: async (req: Request, res: Response) => {
     try {
       const userId = req.body._id;
@@ -113,6 +120,7 @@ const userControllers = {
     }
   },
 
+  // Edit user
   editUser: async (req: Request, res: Response) => {
     try {
       const userId = req.body._id;

@@ -17,8 +17,10 @@ const Resetpassword = () => {
     const navigate = useNavigate();
     const { showModal } = useModal();
 
+    // Handle reset password
     const handleResetPassword = async () => {
         try {
+            // API request to reset password
             const result = await postData(API_BASE_URL + 'user/resetpassword', resetPasswordCredentials);
             if (result.error) {
                 showModal(result.error, "error");
@@ -34,6 +36,7 @@ const Resetpassword = () => {
         }
     };
 
+    // Post request without token
     const postData = async (url: string, data: IResetPasswordCredentials) => {
         const response = await fetch(url, {
             method: 'POST',
@@ -47,6 +50,7 @@ const Resetpassword = () => {
     };
 
     useEffect(() => {
+        // Set props from URL
         const setPropsFromURL = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const email = urlParams.get('email');
@@ -61,12 +65,14 @@ const Resetpassword = () => {
         setPropsFromURL();
     }, []);
 
+    // Handle password change
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setResetPasswordCredentials({ ...resetPasswordCredentials, password: value });
         setPasswordsMatch(value === resetPasswordCredentials.confirmpassword && value.length > 0);
     };
 
+    // Handle confirm password change
     const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setResetPasswordCredentials({ ...resetPasswordCredentials, confirmpassword: value });

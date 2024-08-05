@@ -12,9 +12,11 @@ const OrdersChart = ({ data }: SalesChartProps) => {
     const chartData: { labels: string[], values: number[] } = { labels: [], values: [] };
     const chartRef = useRef<HTMLCanvasElement | null>(null);
 
+    // Prepare sales data for the chart
     const prepareSalesData = (orders: ISellOrder[]) => {
         const salesMap: { [key: string]: number } = {};
 
+        // Calculate orders per month
         orders.forEach((order) => {
             const date = parseISO(order.createdAt);
             const monthYear = format(date, 'yyyy-MM');
@@ -32,12 +34,14 @@ const OrdersChart = ({ data }: SalesChartProps) => {
             return;
         }
 
+        // Create the chart
         const ctx = chartRef.current.getContext('2d');
 
         if (!ctx) {
             return;
         }
 
+        // Chart configuration
         const chart = new Chart(ctx, {
             type: 'bar',
             data: {

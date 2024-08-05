@@ -3,6 +3,7 @@ import passportLocalMongoose from "passport-local-mongoose";
 
 const Schema = mongoose.Schema;
 
+// Define the user schema
 export interface IUser extends PassportLocalDocument {
   _id: mongoose.Types.ObjectId;
   name: string;
@@ -13,6 +14,7 @@ export interface IUser extends PassportLocalDocument {
   role: string;
 }
 
+// Create the user schema
 const userSchema = new Schema(
   {
     name: { type: String, required: [true, "Name cannot be empty"] },
@@ -35,6 +37,7 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+// Add passport-local-mongoose plugin to the user schema
 userSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 
 const User = mongoose.model<IUser>("User", userSchema);
