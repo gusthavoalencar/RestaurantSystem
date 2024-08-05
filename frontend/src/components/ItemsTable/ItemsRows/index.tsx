@@ -62,7 +62,7 @@ const OrderRow = ({ order, handleManageOrderClick }: { order: ISellOrder; handle
                     <div className="col text-center">{order.type}</div>
                     <div className="col text-center">{order.tableNumber}</div>
                     <div className="col text-center">{timeAgo}</div>
-                    <div className="col text-center">{order.total}</div>
+                    <div className="col text-center">${order.total}</div>
                 </div>
             </div>
             <div className="col d-flex justify-content-end">

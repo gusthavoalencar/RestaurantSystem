@@ -125,6 +125,12 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
         }
     };
 
+    useEffect(() => {
+        if (sellOrder.status === "complete") {
+            editSellOrder();
+        }
+    }, [sellOrder.status]);
+
     return (
         <>
             <div className="header row p-0 m-0 pt-5">
@@ -306,7 +312,6 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
                                             ...sellOrder,
                                             comment: comment
                                         });
-                                        editSellOrder();
                                     }}>
                                     <FaEdit className="fs-4 me-2" />
                                     Edit
