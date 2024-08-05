@@ -14,6 +14,7 @@ interface ItemsRowsProps {
     tabSelected: string;
 }
 
+// Item row
 const ItemRow = ({ tabSelected, item, handleManageItemClick }: { item: IItem; handleManageItemClick?: (item: IItem) => void, tabSelected: string }) => (
     <div className="row rounded p-0 m-0 me-5 ms-2 mt-1 pt-1 pb-1 align-items-center tableRow align-middle">
         {tabSelected === "Menu" && (
@@ -48,6 +49,7 @@ const ItemRow = ({ tabSelected, item, handleManageItemClick }: { item: IItem; ha
     </div>
 );
 
+// Order row
 const OrderRow = ({ order, handleManageOrderClick }: { order: ISellOrder; handleManageOrderClick?: (order: ISellOrder) => void }) => {
     const timeAgo = formatDistanceToNow(new Date(order.createdAt), { addSuffix: true });
     const navigate = useNavigate();
@@ -80,6 +82,7 @@ const OrderRow = ({ order, handleManageOrderClick }: { order: ISellOrder; handle
     );
 };
 
+// User row
 const UserRow = ({ user, handleManageUserClick }: { user: IUser; handleManageUserClick?: (user: IUser) => void }) => {
 
     return (

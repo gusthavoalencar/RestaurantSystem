@@ -14,6 +14,7 @@ const SideNav = () => {
         setSelectedNavButton(getSelectedNavButtonFromPath(location.pathname));
     }, [location.pathname]);
 
+    // Handle nav button click
     const handleNavButtonClick = (text: string) => {
         if (text === "Logout") {
             logout('success');
@@ -24,6 +25,7 @@ const SideNav = () => {
         }
     };
 
+    // Get selected nav button from path
     const getSelectedNavButtonFromPath = (pathname: string) => {
         switch (true) {
             case pathname.startsWith("/orders"):
@@ -49,6 +51,7 @@ const SideNav = () => {
         { path: "/logout", text: "Logout" }
     ];
 
+    // Render nav buttons
     const renderedNavButtons = navButtons.map((button) => (
         <Link to={button.path} key={button.text}>
             <NavButton

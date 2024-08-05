@@ -22,15 +22,6 @@ const itemControllers = {
   },
 
   // Creates an item for the inventory
-  // Example of a request object to create:
-  // {
-  //     "name": "Fruit Salad",
-  //     "amount": 5,
-  //     "isMenuItem": true,
-  //     "itemCategories": ["favorites", "salads"],
-  //      "price": 9.99,
-  //      "active": true
-  // }
   createItem: async (req: Request, res: Response) => {
     try {
       const item = req.body;
@@ -75,6 +66,7 @@ const itemControllers = {
         return res.status(400).json({ error: "Item not found" });
       }
 
+      // Check if menu sections exist
       if (updateData.menuSections) {
         const existingMenuSections = await ItemMenuSection.find({ name: { $in: updateData.menuSections } });
         if (existingMenuSections.length !== updateData.menuSections.length) {

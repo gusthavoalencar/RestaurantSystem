@@ -23,8 +23,10 @@ const Management = () => {
 
     const [users, setUsers] = useState<IUser[]>([]);
 
+    // Get users
     const getUsers = async (): Promise<IUser[]> => {
         try {
+            // API request to get users
             const users = await fetchData(API_BASE_URL + 'user/getUsers', token, () => logout('error'));
             setUsers(users);
             return users;

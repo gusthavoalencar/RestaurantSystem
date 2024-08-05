@@ -19,8 +19,10 @@ const Orders = () => {
 
     const [orders, setOrders] = useState<ISellOrder[]>([]);
 
+    // Get orders
     const getOrders = async (): Promise<ISellOrder[]> => {
         try {
+            // API request to get orders
             const items = await fetchData(API_BASE_URL + 'sellorder/getsellorders', token, () => logout('error'));
 
             return items;
@@ -39,7 +41,7 @@ const Orders = () => {
         fetchOrders();
     }, []);
 
-
+    // Handle manage order click
     const handleManageOrderClick = (order: ISellOrder) => {
         setSelectedOrder(order);
     };

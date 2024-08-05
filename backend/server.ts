@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const allowedOrigins = [`http://localhost:${process.env.PORT}`, `http://localhost:${process.env.FRONTEND_PORT}`];
 app.use(cors({ origin: allowedOrigins }));
 
+//Passport
 app.use(
   session({
     secret: process.env.SESSION_SECRET as string,

@@ -29,6 +29,7 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
     const { showModal } = useModal();
     const navigate = useNavigate();
 
+    // Calculate total
     const total = sellOrder.items.reduce((acc, item) => {
         if (item.price !== undefined) {
             return acc + (item.price * item.quantity);
@@ -47,6 +48,7 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
         });
     }
 
+    // Create sell order
     const createSellOrder = async () => {
         if (sellOrder.items.length === 0) {
             showModal("Please add items to create order", "error");
@@ -57,6 +59,7 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
         }
 
         try {
+            // API call to create sell order
             const result = await postData(API_BASE_URL + 'sellorder/createsellorder', sellOrder, token, () => logout('error'));
             if (result.error) {
                 showModal(result.error, "error");
@@ -73,6 +76,7 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
         }
     };
 
+    // Edit sell order
     const editSellOrder = async () => {
         if (sellOrder.items.length === 0) {
             showModal("Please add items to edit order", "error");
@@ -83,6 +87,7 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
         }
 
         try {
+            // API call to edit sell order
             const result = await postData(API_BASE_URL + 'sellorder/editsellorder', sellOrder, token, () => logout('error'));
             if (result.error) {
                 showModal(result.error, "error");
@@ -99,8 +104,11 @@ const OrderList = ({ onAddItemClick, sellOrder, removeItemFromOrder, comment, se
         }
     };
 
+    // Delete sell order
     const deleteSellOrder = async () => {
         try {
+
+            // API call to delete sell order
             const result = await postData(API_BASE_URL + 'sellorder/deletesellorder', sellOrder, token, () => logout('error'));
             if (result.error) {
                 showModal(result.error, "error");

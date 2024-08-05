@@ -24,12 +24,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [token]);
 
+    // Login function
     const login = (token: string) => {
         const formattedToken = token;
         setToken(formattedToken);
         window.location.href = '/orders';
     };
 
+    // Logout function
     const logout = (type: string) => {
         setToken(null);
         if (type === "error") {
@@ -48,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
+// Hook to use the AuthContext
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
     if (context === undefined) {

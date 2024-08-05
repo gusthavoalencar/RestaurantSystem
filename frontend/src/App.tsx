@@ -35,6 +35,7 @@ function App() {
   );
 }
 
+// AuthenticatedApp if the user is authenticated
 function AuthenticatedApp() {
   const { token } = useAuth();
 

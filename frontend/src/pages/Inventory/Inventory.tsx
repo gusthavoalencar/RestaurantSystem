@@ -37,8 +37,10 @@ const Inventory = () => {
 
     const [items, setItems] = useState<IItem[]>([]);
 
+    // Get items
     const getItems = async (): Promise<IItem[]> => {
         try {
+            // API request to get items
             const items = await fetchData(API_BASE_URL + 'item/getitems', token, () => logout('error'));
             setItems(items);
             return items;

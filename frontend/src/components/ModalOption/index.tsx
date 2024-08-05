@@ -13,6 +13,7 @@ const ModalOption = ({ text, onClick }: ModalOptionProps) => {
     const navigate = useNavigate();
     let icon = null;
 
+    // Handle click
     const handleClick = () => {
         switch (text) {
             case "Buy Order":
@@ -32,6 +33,7 @@ const ModalOption = ({ text, onClick }: ModalOptionProps) => {
         }
     };
 
+    // Render icon based on text
     switch (text) {
         case "Buy Order":
             icon = <FaCartPlus className="buttonImage" />;

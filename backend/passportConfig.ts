@@ -3,10 +3,11 @@ import { Strategy as LocalStrategy } from "passport-local";
 import User, { IUser } from "./models/user";
 import { authenticateUser } from "./controllers/userControllers/userControllers.utils";
 
+// configure passport
 passport.use(new LocalStrategy(User.authenticate()));
-
 passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUser));
 
+// serialize and deserialize user
 passport.serializeUser((user: Express.User, done) => {
   done(null, (user as IUser)._id);
 });

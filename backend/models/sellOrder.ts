@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+// Define the sell order items schema
 export interface ISellOrderItems {
   _id: mongoose.Types.ObjectId;
   name: string;
@@ -10,6 +11,7 @@ export interface ISellOrderItems {
   price: number;
 }
 
+// Define the sell order schema
 export interface ISellOrder extends Document {
   items: ISellOrderItems[];
   comment: string;
@@ -23,6 +25,7 @@ export interface ISellOrder extends Document {
   total: number;
 }
 
+// Create the sell order schema
 const sellOrderSchema = new Schema<ISellOrder>(
   {
     type: {

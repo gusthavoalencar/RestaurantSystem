@@ -1,6 +1,7 @@
 import { ISellOrderItems } from "../../models/sellOrder";
 import Item from "../../models/item";
 
+// Fetch items in sell order
 const fetchItemsInSellOrder = async (items: ISellOrderItems[]): Promise<ISellOrderItems[]> => {
   try {
     const itemIds = items.map((item) => item._id);

@@ -49,8 +49,10 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         { value: 'Drinks', label: 'Drinks' }
     ];
 
+    // Fetch categories
     const getCategories = async (): Promise<IItemMenuSection[]> => {
         try {
+            // API request to get categories
             const categories = await fetchData(API_BASE_URL + 'itemMenuSection/getItemMenuSections', token, () => logout('error'));
             return categories;
         } catch (error) {
@@ -59,8 +61,10 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         }
     };
 
+    // Create item
     const createItem = async (): Promise<IItem> => {
         try {
+            // API request to create item
             const result = await postData(API_BASE_URL + 'item/createItem', item, token, () => logout('error'));
             if (result.error) {
                 showModal(result.error, "error");
@@ -83,8 +87,10 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         }
     };
 
+    // Edit item
     const editItem = async (): Promise<IItem> => {
         try {
+            // API request to edit item
             const result = await postData(API_BASE_URL + 'item/editItem', item, token, () => logout('error'));
             if (result.error) {
                 showModal(result.error, "error");
@@ -108,8 +114,10 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         }
     };
 
+    // Delete item
     const deleteItem = async (): Promise<IItem> => {
         try {
+            // API request to delete item
             const result = await postData(API_BASE_URL + 'item/deleteItem', item, token, () => logout('error'));
             if (result.error) {
                 showModal(result.error, "error");
@@ -132,10 +140,13 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         }
     };
 
+    // Fetch categories on component mount
     useEffect(() => {
         const fetchItems = async () => {
             const categories = await getCategories();
             setMenuSections(categories);
+
+            // Set selected item
             if (selectedItem != null) {
                 setItem({
                     ...selectedItem,
@@ -148,6 +159,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         fetchItems();
     }, [selectedItem]);
 
+    // Handle menu section select change
     function handleMenuSectionSelectChange(newValue: MultiValue<{ value: string; label: string }>): void {
         setItem(prevItem => ({
             ...prevItem,
@@ -155,6 +167,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         }));
     }
 
+    // Handle menu category select change
     function handleMenuCategoryChange(newValue: SingleValue<{ value: string; label: string }>): void {
         setItem(prevItem => ({
             ...prevItem,
@@ -162,6 +175,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         }));
     }
 
+    // Update item field
     const updateItemField = (field: keyof IItem, value: any) => {
         setItem((prevItem) => ({
             ...prevItem,
@@ -169,6 +183,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         }));
     };
 
+    // Handle input change
     function handleInputChange(event: ChangeEvent<HTMLInputElement>): void {
         const { id, value, type, checked } = event.target;
 
@@ -185,6 +200,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         }
     }
 
+    // Handle add option click
     function handleAddOptionClick() {
         setItem(prevItem => ({
             ...prevItem,
@@ -193,6 +209,7 @@ const ItemModal = ({ show, onHide, selectedItem, getItems }: CreateItemModalProp
         setOptionValue('');
     }
 
+    // Handle delete option click
     function handleDeleteOptionClick(optionToDelete: string) {
         setItem(prevItem => ({
             ...prevItem,

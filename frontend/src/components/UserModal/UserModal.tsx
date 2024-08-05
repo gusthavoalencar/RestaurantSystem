@@ -47,6 +47,7 @@ const UserModal = ({ show, onHide, selectedUser, getUsers }: UserModalProps) => 
     const statusOptions = [{ value: 'active', label: 'Active' }, { value: 'inactive', label: 'Inactive' }, { value: 'pending', label: 'Pending' }];
     const roleOptions = [{ value: 'waiter', label: 'Waiter' }, { value: 'manager', label: 'Manager' }, { value: 'administrator', label: 'Administrator' }];
 
+    // Handle input change
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setUser((prevUser) => ({
@@ -55,6 +56,7 @@ const UserModal = ({ show, onHide, selectedUser, getUsers }: UserModalProps) => 
         }));
     };
 
+    // Handle status change
     const handleStatusChange = (selectedOption: SingleValue<{ value: string; label: string }>): void => {
         setUser((prevUser) => ({
             ...prevUser,
@@ -62,6 +64,7 @@ const UserModal = ({ show, onHide, selectedUser, getUsers }: UserModalProps) => 
         }));
     };
 
+    // Handle role change
     const handleRoleChange = (selectedOption: SingleValue<{ value: string; label: string }>): void => {
         setUser((prevUser) => ({
             ...prevUser,
@@ -69,6 +72,7 @@ const UserModal = ({ show, onHide, selectedUser, getUsers }: UserModalProps) => 
         }));
     };
 
+    // Create user through API request
     const createUser = async () => {
         try {
             const result = await postData(API_BASE_URL + 'user/register', user, token, () => logout('error'));
@@ -89,6 +93,7 @@ const UserModal = ({ show, onHide, selectedUser, getUsers }: UserModalProps) => 
         }
     };
 
+    // Edit user through API request
     const editUser = async () => {
         try {
             const result = await postData(API_BASE_URL + 'user/edituser', user, token, () => logout('error'));
@@ -109,6 +114,7 @@ const UserModal = ({ show, onHide, selectedUser, getUsers }: UserModalProps) => 
         }
     };
 
+    // Delete user through API request
     const deleteUser = async () => {
         try {
             const result = await postData(API_BASE_URL + 'user/deleteUser', user, token, () => logout('error'));

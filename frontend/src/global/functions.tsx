@@ -1,3 +1,4 @@
+// FetchData to comminucate with the back-end
 export const fetchData = async (url: string, token: string | null, logout: () => void) => {
 
     const response = await fetch(url, {
@@ -16,6 +17,7 @@ export const fetchData = async (url: string, token: string | null, logout: () =>
     return json;
 };
 
+// PostData to comminucate with the back-end
 export const postData = async (url: string, data: any, token: string | null, logout: () => void) => {
 
     const response = await fetch(url, {

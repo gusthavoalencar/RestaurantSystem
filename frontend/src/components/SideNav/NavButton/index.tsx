@@ -13,6 +13,7 @@ interface NavButtonProps {
 
 const NavButton = ({ text, selected, onClick }: NavButtonProps) => {
 
+    // Render icon based on text
     const renderIcon = () => {
         switch (text) {
             case 'Orders':

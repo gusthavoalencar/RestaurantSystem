@@ -11,12 +11,14 @@ const SalesChart = ({ data }: SalesChartProps) => {
     const chartData: { labels: string[], values: number[] } = { labels: [], values: [] };
     const chartRef = useRef<HTMLCanvasElement | null>(null);
 
+    // Prepare sales data for the chart
     const prepareSalesData = (orders: ISellOrder[]) => {
         const labels: string[] = [];
         const values: number[] = [];
 
         const salesMap: { [key: string]: number } = {};
 
+        // Calculate cumulative sales
         orders.forEach(order => {
             const date = new Date(order.createdAt);
             const label = date.toISOString().split('T')[0];
@@ -30,6 +32,7 @@ const SalesChart = ({ data }: SalesChartProps) => {
         const sortedLabels = Object.keys(salesMap).sort();
         let cumulativeSales = 0;
 
+        // Prepare data for the chart
         sortedLabels.forEach(label => {
             cumulativeSales += salesMap[label];
             labels.push(label);
@@ -46,12 +49,14 @@ const SalesChart = ({ data }: SalesChartProps) => {
             return;
         }
 
+        // Create the chart
         const ctx = chartRef.current.getContext('2d');
 
         if (!ctx) {
             return;
         }
 
+        // Chart configuration
         const chart = new Chart(ctx, {
             type: 'line',
             data: {

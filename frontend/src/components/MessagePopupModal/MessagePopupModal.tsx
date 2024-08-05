@@ -14,6 +14,7 @@ const MessagePopupModal = ({ show, onHide, message, type }: MessagePopupModalPro
     const duration = 2000;
     const closeDelay = 300;
 
+    // Update progress bar
     useEffect(() => {
         let timer: NodeJS.Timeout;
 
